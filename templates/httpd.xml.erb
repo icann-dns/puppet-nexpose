@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!-- The NeXpose Control Center HTTP Server Configuration File -->
+<!-- $Id: server.xml,v 1.6 2004/09/30 17:58:52 mlocasto Exp $ -->
+<!--
+    The root element contains much of the HTTP server configuration 
+    information. In particular, the various attributes and their meanings
+    are listed below:
+
+    port                 :: the port to bind the server socket to listen on
+    serverRoot           :: the directory that contains the rest of the
+                            WebNeX server installation. Should be the parent
+                            of conf/, the directory this file is in.
+    docRoot              :: the directory that houses the website files that
+                            this WebNeX instance serves out. This is where the
+                            website content lives.
+    min-server-threads   :: the min number of threads to have in the thread
+                            pool to service requests. The actual number of
+                            service threads are calculated as a combination of 
+                            this attribute and the next.
+    max-server-threads   :: the maximum number of service threads to maintain
+    keepalive            :: whether or not to keep connections alive. unused.
+    socket-timeout       :: the timeout in milliseconds of the underlying TCP
+                            socket
+    sc-lookup-cache-size :: the number of entries in the URI->session context
+                            mapping cache. We use the cache to avoid expensive
+                            longest prefix matching on URIs to get the proper
+                            session context.
+    debug                :: a debug level indicator. higher val means more info
+    httpd-error-strings  :: the file name, relative to serverRoot, of error
+                            strings that contain explanations of errors that
+                            can happen during servicing of a client request
+    default-login-page   :: an absolute URI from the docRoot identifying the
+                            URI of the page that unauthenticated requests 
+                            should be redirected to.
+    default-setup-page   :: the default URI for invoking the setup bootstrap
+                            proglet. This value should match the value for the
+                            proglet in the proglet config file.
+    default-error-page   :: the default URI to server for failed requests
+    first-time-config    :: a true or false value indicating if this is the
+                            first time that the server has been run and needs
+                            to be configured.
+    bad-login-lockout    :: the maximum number of failed login attempts for a
+                            particular user account before that account is no
+                            longer allowed to attempt a login. The account is
+                            not 'disabled' in the role store sense, but rather
+                            state is kept in the user manager on that account
+                            and the account will not be allowed to cause the
+                            authenticate method to be called.
+    admin-app-path       :: the URI base where all requests for URIs under it
+                            have to be from a user with the 
+                            nsc.role.nexposeadmin session attribute set to
+                            true. Be careful. This value MUST NOT have a 
+                            trailing /
+    auth-param-username  :: the name of the HTTP param that should be sent
+                            with every unauthenticated HTTP request that
+                            identifies the user. To be clear, the value of
+                            this variable should be the name of a form element
+                            on the login page.
+    auth-param-password  :: see above, except this specifies the name of the
+                            password HTTP param
+    server-id-string     :: the identifying string for this server version,
+                            much like Apache/2.0.50 (Unix) or IIS/5.0
+    proglet-list         :: the file name of the proglet configuration file,
+                            relative to serverRoot
+    taglib-list          :: the file name of the taglib configuration file,
+                            which basically has a bunch of #includes for 
+                            various tag library definition files, relative to
+                            serverRoot
+-->
+<server port                 = "<%= @port %>"
+        serverRoot           = "<%= @server_root %>"
+        docRoot              = "<%= @doc_root %>"
+        min-server-threads   = "<%= @min_server_threads %>"
+        max-server-threads   = "<%= @max_server_threads %>"
+        keepalive            = "<%= @keepalive %>"
+        socket-timeout       = "<%= @socket_timeout %>"
+        sc-lookup-cache-size = "<%= @sc_lookup_cache_size %>"
+        debug                = "<%= @debug %>"
+        httpd-error-strings  = "<%= @httpd_error_strings %>"
+        default-start-page   = "<%= @default_start_page %>"
+        default-login-page   = "<%= @default_login_page %>"
+        default-home-page    = "<%= @default_home_page %>"
+        default-setup-page   = "<%= @default_setup_page %>"
+        default-error-page   = "<%= @default_error_page %>"
+        first-time-config    = "<%= @first_time_config %>"
+        bad-login-lockout    = "<%= @bad_login_lockout %>"
+        admin-app-path       = "<%= @admin_app_path %>"
+        auth-param-username  = "<%= @auth_param_username %>"
+        auth-param-password  = "<%= @auth_param_password %>"
+        server-id-string     = "<%= @server_id_string %>"
+        proglet-list         = "<%= @proglet_list %>"
+        taglib-list          = "<%= @taglib_list %>"
+      >
+
+   <!--
+    The following node specifies a list of resources that a client is
+    allowed to access without a session or being authenticated.
+
+    Don't edit this list unless you know EXACTLY what you are doing. That is,
+    you should have READ and UNDERSTOOD the source code in RequestHandler,
+    HTTPServerMain, ServerXMLConfig, and IVirtualHost dealing with this
+    functionality.
+
+    All paths are resolved relative to the 'serverRoot' attribute above.
+
+    If a 'dir' sub-node is specified, then ServerXMLConfig will open that
+    path as a File and list all the Files in the directory. It will add all
+    elements of this directory except for the special ./ and ../ directory
+    handles.
+
+    Note, in particular, that this list is generated via the File.list()
+    method. Javadocs for that method say, in part:
+
+       "If this abstract pathname does not denote a directory, 
+        then this method returns null. Otherwise an array of 
+        strings is returned, one for each file or directory in 
+        the directory. Names denoting the directory itself and 
+        the directory's parent directory are not included in 
+        the result. Each string is a file name rather than a 
+        complete path."
+
+    Thus, resulting names generated will have to also be resolved against
+    serverRoot. Note that they do not need to be validated against a 
+    particular platform, as they represent HTTP URIs.
+
+    Finally, the value of the 'uri' attribute is interpreted strictly 
+    according to the sub-node type. If the subnode type is 'dir', then
+    the value of 'uri' will be interpreted as a directory, even if it
+    has a value that would normally seem like a filename (e.g, 'foobar.html').
+    Likewise, the value of 'uri' for 'file' sub-nodes is strictly interpreted
+    as a filename. This means that trailing slashes will be discarded.
+
+    In all cases, leading slashes are kept.
+
+   -->
+  <allowed-resources>
+    <file uri="/index.html" />
+    <file uri="/login.html" />
+    <file uri="/ajax/login_status.txml"/>
+    <dir uri="/scripts" />
+    <dir uri="/images" />
+    <dir uri="/style" />
+    <dir uri="/help" />
+    <dir uri="/api" />
+    <dir uri="/vmware" />
+    <dir uri="/yui" />
+    <dir uri="/vmware" />
+  </allowed-resources>
+
+     <!-- 
+     The User Manager configuration. The UserManager now relies on
+     the DataStoreManager and that handles all the database work,
+     including any needed configuration. 
+     -->
+  <user-manager name="Nexpose v4 User Manager v2" />
+
+     <!-- 
+     The virtual hosts. Only one virtual host is currently 
+     supported. Each virtual host contains a number of session
+     contexts. The 'name' attribute of the virtual host should be
+     a valid DNS name for your organization, or a valid IPv4 address.
+     If you are unsure, 127.0.0.1 is always a good choice. Right now,
+     there is a complicated issue with cookies and session context 
+     interaction for stale cookies and authentication, so while the
+     machinery for creating and managing multiple session contexts is
+     in place, the default is to only operate with one session context.
+     There is no loss of security in doing so.
+     -->
+
+  <virtual-host name="<%= @virtualhost %>">
+
+   <!--
+     The idleTimeout param is in seconds. Three hundred seconds is a 
+     good 5 minutes before sessions are eligible to be timed out. 
+     -->
+   <session-context  name               = "default base session context" 
+                     path               = "/"
+                     sessionManagerName = "default base session manager"
+                     idleTimeout        = "600"/>
+<!--
+   <session-context  name               = "sc1" 
+                     path               = "/attack-plan1"
+                     sessionManagerName = "sm1"
+                     idleTimeout        = "90"/>
+
+   <session-context  name               = "sc2" 
+                     path               = "/admin"
+                     sessionManagerName = "sm2"
+                     idleTimeout        = "50"/>
+-->
+  </virtual-host>
+
+</server>
+
