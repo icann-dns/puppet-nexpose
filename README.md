@@ -15,41 +15,54 @@
 
 ## Overview
 
-A one-maybe-two sentence summary of what the module does/what problem it solves.
-This is your 30 second elevator pitch for your module. Consider including
-OS/Puppet version it works with.
+This module attempts to configuer nexpose basic config
 
 ## Module Description
 
-If applicable, this section should have a brief description of the technology
-the module integrates with and what that integration enables. This section
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?"
-
-If your module has a range of functionality (installation, configuration,
-management, etc.) this is the time to mention it.
+The module currently supports configuering the basic web server parmaters of the security console including configuering ldap authentication source.  It also adds a new custome type nexpose\_host this allows for exporting resources and realising them on the nexpose console
 
 ## Setup
 
 ### What nexpose affects
 
-* A list of files, packages, services, or operations that the module will alter,
-  impact, or execute on the system it's installed on.
-* This is a great place to stick any warnings.
-* Can be in list or paragraph form.
+This module is configuered to work with the virtual machine provided by nexpose.  The following files are altered during configeration
+ * /opt/rapid7/nexpose/nsc/conf/httpd.xml (via a template)
+ * /opt/rapid7/nexpose/nsc/conf/nsc.xml (using augeas)
+It also uses the augeas api to add resources directly to the nexpos console.  The policy will install the nexpose gem and configure the system for ruby 1.9.3.
 
-### Setup Requirements **OPTIONAL**
+If you are using puppet enterprise you will need to install the puppet gem manully with the following command 
 
-If your module requires anything extra before setting up (pluginsync enabled,
-etc.), mention it here.
+/opt/puppet/bin/gem install nexpose
+
+### Setup Requirements 
+
+ * puppetlabs/puppetlabs-ruby
 
 ### Beginning with nexpose
 
-The very basic steps needed for a user to get the module up and running.
+to configure nexpose with default settings add the following:
 
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you may wish to include an additional section here: Upgrading
-(For an example, see http://forge.puppetlabs.com/puppetlabs/firewall).
+class {'::nexpose': } 
+
+To configure ldap ad the following to your manifest
+
+class {'::nexpose:ldap':
+  ldap\_server => 'ldap.example.com',
+  ldap\_base   => 'DC=example,DC=com',
+}
+
+To export a resource use the follwing
+
+    @@nexpose_host {
+        $::ipaddress:
+            ensure => present,
+            siteid => 1,
+    }
+And to realise it use
+
+Nexposei\_host <<||>>
+
+in future releases i hope to use the site name and fqdn for the host.
 
 ## Usage
 
@@ -65,15 +78,9 @@ with things. (We are working on automating this section!)
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc.
+Only tested with the rapid7 nexpose VM.  Currently restarts the nexposeconsole when making changes which takes a long time.
 
 ## Development
 
-Since your module is awesome, other users will want to play with it. Let them
-know what the ground rules for contributing are.
+Any feedback or pull requests welcom
 
-## Release Notes/Contributors/Etc **Optional**
-
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You may also add any additional sections you feel are
-necessary or important to include here. Please use the `## ` header.
