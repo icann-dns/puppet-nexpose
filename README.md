@@ -28,6 +28,7 @@ The module currently supports configuering the basic web server parmaters of the
 This module is configuered to work with the virtual machine provided by nexpose.  The following files are altered during configeration
  * /opt/rapid7/nexpose/nsc/conf/httpd.xml (via a template)
  * /opt/rapid7/nexpose/nsc/conf/nsc.xml (using augeas)
+
 It also uses the augeas api to add resources directly to the nexpos console.  The policy will install the nexpose gem and configure the system for ruby 1.9.3.
 
 If you are using puppet enterprise you will need to install the puppet gem manully with the following command 
