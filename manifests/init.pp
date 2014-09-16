@@ -36,7 +36,7 @@
 # Copyright 2014 Your name here, unless otherwise noted.
 #
 class nexpose (
-  $port            = $::nexpose::params::port,
+  $port                 = $::nexpose::params::port,
   $server_root          = $::nexpose::params::server_root,
   $doc_root             = $::nexpose::params::doc_root,
   $min_server_threads   = $::nexpose::params::min_server_threads,

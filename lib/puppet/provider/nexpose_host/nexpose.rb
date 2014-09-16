@@ -25,7 +25,6 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose) do
       result[:siteid] = device.id
       new(result)
     end
-    nsc.logout 
   end
 
   def siteid=(value)
@@ -33,28 +32,26 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose) do
   end
 
   def flush
+    Puppet.debug("FLUSH")
     nsc = Connection.new('127.0.0.1', 'nxadmin', 'nxpassword', 443)
     nsc.login
     @siteid =  @property_flush.key?(:siteid)? @property_flush[:siteid] : @resource[:siteid]
     if @property_flush[:ensure] == :absent
+      Puppet.debug('not implmented')
+    else
+      Puppet.debug("add #{@resource[:name]}")
       site = Site.load(nsc, @siteid)
       site.add_host(@resource[:name])
-      site.save
-    else
-      Puppet.debug('not implmented')
+      site.save(nsc)
     end
-    nsc.logout
   end
   def create
     @property_flush[:ensure] = :present
   end
-
   def destroy
     @property_flush[:ensure] = :absent
   end
-
   def exists?
     @property_hash[:ensure] == :present
   end
-
 end
