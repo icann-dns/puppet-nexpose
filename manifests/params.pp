@@ -35,4 +35,9 @@ class nexpose::params {
   $ldap_email_map        = 'mail'
   $ldap_login_map        = 'sAMAccountName'
   $ldap_fullname_map     = 'cn'
+  #api
+  $api_user              = 'nxadmin'
+  $api_password          = 'nxpassword'
+  $api_server            = 'localhost'
+  $api_port              = 443
 }

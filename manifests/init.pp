@@ -60,6 +60,10 @@ class nexpose (
   $proglet_list         = $::nexpose::params::proglet_list,
   $taglib_list          = $::nexpose::params::taglib_list,
   $virtualhost          = $::nexpose::params::virtualhost,
+  $api_user             = $::nexpose::params::api_user,
+  $api_password         = $::nexpose::params::api_password,
+  $api_server           = $::nexpose::params::api_server,
+  $api_port             = $::nexpose::params::api_port,
 ) inherits nexpose::params {
   class { 'ruby':
     version            => '1.9.3',
@@ -74,6 +78,9 @@ class nexpose (
     '/opt/rapid7/nexpose/nsc/conf/httpd.xml':
       notify  => Service['nexposeconsole.rc'],
       content => template('nexpose/httpd.xml.erb');
+    '/opt/rapid7/nexpose/nsc/conf/api.conf':
+      content => "user=${api_user}\npassword=${api_password}\nserver=${api_server}\nport=${api_port}\n",
+      mode    => '0400';
   }
   augeas {
     '/opt/rapid7/nexpose/nsc/conf/nsc.xml':

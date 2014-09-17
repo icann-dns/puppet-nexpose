@@ -1,6 +1,5 @@
-require 'nexpose'
-include Nexpose
-Puppet::Type.type(:nexpose_host).provide(:nexpose) do
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'nexpose'))
+Puppet::Type.type(:nexpose_host).provide(:nexpose, :parent => Puppet::Provider::Nexpose ) do
 
   defaultfor :kernel => 'Linux'
   mk_resource_methods
@@ -18,7 +17,7 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose) do
 
   def self.instances
     results = Array.new
-    nsc = Connection.new('127.0.0.1', 'nxadmin', 'nxpassword', 443)
+    nsc = connection
     nsc.login 
     nsc.list_sites.collect do |site|
       Site.load(nsc, site.id).assets.collect do |asset|
@@ -37,7 +36,7 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose) do
   end
 
   def flush
-    nsc = Connection.new('127.0.0.1', 'nxadmin', 'nxpassword', 443)
+    nsc = connection
     nsc.login
     @site_name =  @property_flush.key?(:site)? @property_flush[:site] : @resource[:site]
     if @property_flush[:ensure] == :absent
