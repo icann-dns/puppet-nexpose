@@ -39,19 +39,21 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose) do
   def flush
     nsc = Connection.new('127.0.0.1', 'nxadmin', 'nxpassword', 443)
     nsc.login
-    @site_id = false    
     @site_name =  @property_flush.key?(:site)? @property_flush[:site] : @resource[:site]
-    nsc.list_sites.collect do |site|
-      if site.name == @site_name 
-        @site_id = site.id
-      end
-    end
     if @property_flush[:ensure] == :absent
-      Puppet.debug('not implmented')
+      nsc.list_sites.collect do |site_summary| 
+        Puppet.debug("remove #{@resource[:name]}")
+        site = Site.load(nsc, site_summary.id)
+        if site.assets.include? HostName.new(@resource[:name])
+          site.assets = site.assets.reject { |asset| asset == HostName.new(@resource[:name]) }
+          site.save(nsc)
+        end
+      end
     else
-      Puppet.debug("add #{@resource[:name]}")
-      if @site_id 
-        site = Site.load(nsc, @site_id)
+      site_summary = nsc.list_sites.find { |site| site.name == @site_name } 
+      if site_summary
+        Puppet.debug("add #{@resource[:name]}")
+        site = Site.load(nsc, site_summary.id)
         site.add_host(@resource[:name])
         site.save(nsc)
       else

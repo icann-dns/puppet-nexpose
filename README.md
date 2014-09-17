@@ -93,7 +93,7 @@ with things. (We are working on automating this section!)
 
 Only tested with the rapid7 nexpose VM.  Currently restarts the nexposeconsole when making changes which takes a long time.
 
- * The nexpose\_host parameter doesn't support ensure => absent
+ * When using absent with nexpose\_host it will remove the host from all templates
  * if you change the site property of nexpose\_host it will add the host to the new site but it will remain in old site (this should probably be an array however in the back end it creates two devices on the backend so still not convinced)
 
 ## Development
