@@ -28,8 +28,8 @@ Puppet::Type.newtype(:nexpose_host) do
         end
     end
 
-    newproperty(:siteid ) do
-        desc "siteid to use"
-        newvalues(/\d+/)
+    newproperty(:site ) do
+        desc "site to use"
+        newvalues(/\w+/)
     end
 end

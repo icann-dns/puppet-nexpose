@@ -17,33 +17,46 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose) do
   end
 
   def self.instances
+    results = Array.new
     nsc = Connection.new('127.0.0.1', 'nxadmin', 'nxpassword', 443)
     nsc.login 
-    nsc.devices.collect do |device|
-      Puppet.debug("Collecting #{@device}")
-      result = { :ensure => :present }
-      #we need to have the fqdn name here but we never get it :(
-      result[:name] = device.address
-      result[:siteid] = device.id
-      new(result)
+    nsc.list_sites.collect do |site|
+      Site.load(nsc, site.id).assets.collect do |asset|
+        Puppet.debug("Collecting #{asset.host}")
+        result = { :ensure => :present }
+        result[:name] = asset.host
+        result[:site] = site.name
+        results << new(result)
+      end
     end
+    results
   end
 
-  def siteid=(value)
-    @property_flush[:siteid] = value
+  def site=(value)
+    @property_flush[:site] = value
   end
 
   def flush
     nsc = Connection.new('127.0.0.1', 'nxadmin', 'nxpassword', 443)
     nsc.login
-    @siteid =  @property_flush.key?(:siteid)? @property_flush[:siteid] : @resource[:siteid]
+    @site_id = false    
+    @site_name =  @property_flush.key?(:site)? @property_flush[:site] : @resource[:site]
+    nsc.list_sites.collect do |site|
+      if site.name == @site_name 
+        @site_id = site.id
+      end
+    end
     if @property_flush[:ensure] == :absent
       Puppet.debug('not implmented')
     else
       Puppet.debug("add #{@resource[:name]}")
-      site = Site.load(nsc, @siteid)
-      site.add_host(@resource[:name])
-      site.save(nsc)
+      if @site_id 
+        site = Site.load(nsc, @site_id)
+        site.add_host(@resource[:name])
+        site.save(nsc)
+      else
+        Puppet.warn("Unable to add @resource[:name] as @site_name dose not exist")
+      end
     end
   end
   def create

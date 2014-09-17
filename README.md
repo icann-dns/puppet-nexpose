@@ -57,13 +57,12 @@ To export a resource use the follwing
     @@nexpose_host {
         $::fqdn:
             ensure => present,
-            siteid => 1,
+            site => 'site_name',
     }
 And to realise it use
 
 Nexpose\_host <<||>>
 
-WARN: Currently this will add each host on every puppet run
 
 ## Usage
 
