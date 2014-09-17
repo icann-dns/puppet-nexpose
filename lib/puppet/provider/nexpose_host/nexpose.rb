@@ -20,7 +20,9 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose) do
     nsc = Connection.new('127.0.0.1', 'nxadmin', 'nxpassword', 443)
     nsc.login 
     nsc.devices.collect do |device|
+      Puppet.debug("Collecting #{@device}")
       result = { :ensure => :present }
+      #we need to have the fqdn name here but we never get it :(
       result[:name] = device.address
       result[:siteid] = device.id
       new(result)
@@ -32,7 +34,6 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose) do
   end
 
   def flush
-    Puppet.debug("FLUSH")
     nsc = Connection.new('127.0.0.1', 'nxadmin', 'nxpassword', 443)
     nsc.login
     @siteid =  @property_flush.key?(:siteid)? @property_flush[:siteid] : @resource[:siteid]
