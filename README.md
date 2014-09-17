@@ -55,15 +55,15 @@ class {'::nexpose:ldap':
 To export a resource use the follwing
 
     @@nexpose_host {
-        $::ipaddress:
+        $::fqdn:
             ensure => present,
             siteid => 1,
     }
 And to realise it use
 
-Nexposei\_host <<||>>
+Nexpose\_host <<||>>
 
-in future releases i hope to use the site name and fqdn for the host.
+WARN: Currently this will add each host on every puppet run
 
 ## Usage
 
