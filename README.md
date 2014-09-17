@@ -35,6 +35,10 @@ If you are using puppet enterprise you will need to install the puppet gem manul
 
 /opt/puppet/bin/gem install nexpose
 
+We also introduce two custom types 
+ * nexpose\_host
+ * nexpose\_site
+
 ### Setup Requirements 
 
  * puppetlabs/puppetlabs-ruby
@@ -58,11 +62,20 @@ To export a resource use the follwing
         $::fqdn:
             ensure => present,
             site => 'site_name',
+            require => Nexpose_site['site_name'];
     }
 And to realise it use
 
 Nexpose\_host <<||>>
 
+To add a site to the nexpose console 
+
+    @@nexpose_host {
+        'site_name'
+            ensure => present,
+            description => 'description',
+            scan_template => 'scan_template',
+    }
 
 ## Usage
 
@@ -79,6 +92,9 @@ with things. (We are working on automating this section!)
 ## Limitations
 
 Only tested with the rapid7 nexpose VM.  Currently restarts the nexposeconsole when making changes which takes a long time.
+
+ * The nexpose\_host parameter doesn't support ensure => absent
+ * if you change the site property of nexpose\_host it will add the host to the new site but it will remain in old site (this should probably be an array need to check how this is ment to happent)
 
 ## Development
 
