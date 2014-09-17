@@ -70,7 +70,7 @@ Nexpose\_host <<||>>
 
 To add a site to the nexpose console 
 
-    @@nexpose_host {
+    nexpose_site {
         'site_name'
             ensure => present,
             description => 'description',
@@ -94,7 +94,7 @@ with things. (We are working on automating this section!)
 Only tested with the rapid7 nexpose VM.  Currently restarts the nexposeconsole when making changes which takes a long time.
 
  * The nexpose\_host parameter doesn't support ensure => absent
- * if you change the site property of nexpose\_host it will add the host to the new site but it will remain in old site (this should probably be an array need to check how this is ment to happent)
+ * if you change the site property of nexpose\_host it will add the host to the new site but it will remain in old site (this should probably be an array however in the back end it creates two devices on the backend so still not convinced)
 
 ## Development
 
