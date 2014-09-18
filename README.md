@@ -35,9 +35,10 @@ If you are using puppet enterprise you will need to install the puppet gem manul
 
 /opt/puppet/bin/gem install nexpose
 
-We also introduce two custom types 
+We also introduce three custom types 
  * nexpose\_host
  * nexpose\_site
+ * nexpose\_user
 
 ### Setup Requirements 
 
@@ -76,6 +77,46 @@ To add a site to the nexpose console
             description => 'description',
             scan_template => 'scan_template',
     }
+The following scan\_templates are supported
+  * cis
+  * disa
+  * dos-audit
+  * discovery
+  * aggressive-discovery
+  * exhaustive-audit
+  * fdcc-1\_2\_1\_0
+  * full-audit
+  * full-audit-without-web-spider
+  * hipaa-audit
+  * internet-audit
+  * linux-rpm
+  * microsoft-hotfix
+  * pci-audit
+  * pentest-audit
+  * scada
+  * network-audit
+  * sox-audit
+  * usgcb-1\_2\_1\_0
+  * web-audit
+
+To add a user to the nexpose console 
+
+  nexpose\_user {
+    'nxadmin'
+      ensure      => present,
+      enabled     => true,
+      password    => 'nxpassword',
+      full_name   => 'Default User',
+      role        => 'global-admin';
+  }
+
+If the password is not present then the account will be created with a password of nxpassword.  The following roles are supported 
+  * user
+  * system-admin
+  * controls-insight-only
+  * global-admin
+  * security-manager
+  * site-admin
 
 ## Usage
 
