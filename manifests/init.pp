@@ -62,8 +62,6 @@ class nexpose (
   $virtualhost          = $::nexpose::params::virtualhost,
   $api_user             = $::nexpose::params::api_user,
   $api_password         = $::nexpose::params::api_password,
-  $api_server           = $::nexpose::params::api_server,
-  $api_port             = $::nexpose::params::api_port,
 ) inherits nexpose::params {
   class { 'ruby':
     version            => '1.9.3',
@@ -79,7 +77,7 @@ class nexpose (
       notify  => Service['nexposeconsole.rc'],
       content => template('nexpose/httpd.xml.erb');
     '/opt/rapid7/nexpose/nsc/conf/api.conf':
-      content => "user=${api_user}\npassword=${api_password}\nserver=${api_server}\nport=${api_port}\n",
+      content => "user=${api_user}\npassword=${api_password}\nserver=${virtualhost}\nport=${port}\n",
       mode    => '0400';
   }
   augeas {
@@ -103,5 +101,13 @@ class nexpose (
   }
   user {'nexpose':
     password => '!';
+  }
+  nexpose_user {
+    $api_user:
+      ensure      => present,
+      enabled     => true,
+      password    => $api_password,
+      full_name   => 'Puppet API User',
+      role        => 'global-admin';
   }
 }

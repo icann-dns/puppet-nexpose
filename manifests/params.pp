@@ -38,6 +38,4 @@ class nexpose::params {
   #api
   $api_user              = 'nxadmin'
   $api_password          = 'nxpassword'
-  $api_server            = 'localhost'
-  $api_port              = 443
 }
