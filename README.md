@@ -48,14 +48,14 @@ We also introduce three custom types
 
 to configure nexpose with default settings add the following:
 
-class {'::nexpose': } 
+    class {'::nexpose': } 
 
 To configure ldap ad the following to your manifest
 
-class {'::nexpose:ldap':
-  ldap\_server => 'ldap.example.com',
-  ldap\_base   => 'DC=example,DC=com',
-}
+    class {'::nexpose:ldap':
+      ldap\_server => 'ldap.example.com',
+      ldap\_base   => 'DC=example,DC=com',
+    }
 
 To export a resource use the follwing
 
@@ -67,7 +67,7 @@ To export a resource use the follwing
     }
 And to realise it use
 
-Nexpose\_host <<||>>
+    Nexpose\_host <<||>>
 
 To add a site to the nexpose console 
 
@@ -77,6 +77,7 @@ To add a site to the nexpose console
             description => 'description',
             scan_template => 'scan_template',
     }
+
 The following scan\_templates are supported
   * cis
   * disa
@@ -101,14 +102,14 @@ The following scan\_templates are supported
 
 To add a user to the nexpose console 
 
-  nexpose\_user {
-    'nxadmin'
-      ensure      => present,
-      enabled     => true,
-      password    => 'nxpassword',
-      full_name   => 'Default User',
-      role        => 'global-admin';
-  }
+    nexpose\_user {
+      'nxadmin'
+        ensure      => present,
+        enabled     => true,
+        password    => 'nxpassword',
+        full_name   => 'Default User',
+        role        => 'global-admin';
+    }
 
 If the password is not present then the account will be created with a password of nxpassword.  The following roles are supported 
   * user
