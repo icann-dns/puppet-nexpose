@@ -31,10 +31,6 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose, :parent => Puppet::Provider::
     results
   end
 
-  def site=(value)
-    @property_flush[:site] = value
-  end
-
   def flush
     nsc = connection
     nsc.login

@@ -34,6 +34,7 @@ Puppet::Type.newtype(:nexpose_user) do
 
     newproperty(:enabled ) do
         desc 'is the user enabled'
+        defaultto(:true)
         newvalue(:true)
         newvalue(:false)
         munge do |value|
@@ -43,6 +44,7 @@ Puppet::Type.newtype(:nexpose_user) do
 
     newproperty(:role ) do
         desc 'user role'
+        isrequired
         newvalues(:'user',  :'system-admin', :'controls-insight-only', :'global-admin', 
                   :'security-manager', :'site-admin')
     end

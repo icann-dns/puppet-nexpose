@@ -10,6 +10,7 @@ Puppet::Type.newtype(:nexpose_host) do
 
     newproperty(:site ) do
         desc "site to use"
+        isrequired
         newvalues(/\w+/)
     end
 end

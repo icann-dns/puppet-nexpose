@@ -9,6 +9,7 @@ Puppet::Type.newtype(:nexpose_site) do
 
     newproperty(:scan_template) do
         desc "site to use"
+        isrequired
         newvalues(:cis, :disa, :'dos-audit', :discovery, :'aggressive-discovery', :'exhaustive-audit', :'fdcc-1_2_1_0', 
                   :'full-audit', :'full-audit-without-web-spider', :'hipaa-audit', :'internet-audit', :'linux-rpm', 
                   :'microsoft-hotfix', :'pci-audit', :'pentest-audit', :'scada', :'network-audit', :'sox-audit', 

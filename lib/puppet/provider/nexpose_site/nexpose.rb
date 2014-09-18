@@ -30,14 +30,6 @@ Puppet::Type.type(:nexpose_site).provide(:nexpose, :parent => Puppet::Provider::
     end
   end
 
-  def description=(value)
-    @property_flush[:description] = value
-  end
-
-  def scan_template=(value)
-    @property_flush[:scan_template] = value
-  end
-
   def flush
     @description =  @property_flush.key?(:description)? @property_flush[:description] : @resource[:description]
     @scan_template =  @property_flush.key?(:scan_template)? @property_flush[:scan_template] : @resource[:scan_template]

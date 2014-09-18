@@ -34,27 +34,6 @@ Puppet::Type.type(:nexpose_user).provide(:nexpose, :parent => Puppet::Provider::
     end
   end
 
-  #These are the setters
-  def full_name=(value)
-    @property_flush[:full_name] = value
-  end
-
-  def email=(value)
-    @property_flush[:email] = value
-  end
-
-  def role=(value)
-    @property_flush[:role] = value
-  end
-
-  def enabled=(value)
-    @property_flush[:enabled] = value 
-  end
-
-  def enabled=(value)
-    @property_flush[:password] = value 
-  end
-
   def password
     Puppet.debug("check #{@resource[:name]} #{@resource[:password]}")
     @password = @resource[:password] ? @resource[:password] : 'nxpassword'
