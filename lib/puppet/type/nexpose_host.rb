@@ -6,9 +6,9 @@ Puppet::Type.newtype(:nexpose_host) do
     def munge_boolean(value)
       case value
       when true, 'true', :true
-        :true
+        true
       when false, 'false', :false
-        :false
+        false
       else
         fail("munge_boolean only takes booleans")
       end
