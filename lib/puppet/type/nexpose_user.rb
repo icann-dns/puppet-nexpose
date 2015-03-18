@@ -49,6 +49,9 @@ Puppet::Type.newtype(:nexpose_user) do
         desc 'authentication module'
         defaultto(:xml)
         newvalues(:ldap, :xml)
+        munge do |value|
+          value.to_s.upcase
+        end
     end
 
     newproperty(:role ) do
