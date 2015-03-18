@@ -102,6 +102,8 @@ class nexpose (
   user {'nexpose':
     password => '!';
   }
+  #There is a bit of a chicken egg situation with this one.  
+  #if we change the api password then the api function will fail
   nexpose_user {
     $api_user:
       ensure      => present,

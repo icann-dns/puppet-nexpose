@@ -19,12 +19,14 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose, :parent => Puppet::Provider::
     results = Array.new
     nsc = connection
     nsc.login 
-    nsc.list_sites.collect do |site|
-      Site.load(nsc, site.id).assets.collect do |asset|
+    nsc.list_sites.collect do |site_summary|
+      site = Site.load(nsc, site_summary.id)
+      site.assets.collect do |asset|
         Puppet.debug("Collecting #{asset.host}")
         result = { :ensure => :present }
         result[:name] = asset.host
         result[:site] = site.name
+        result[:operational] = (not site.exclude.include?(HostName.new(result[:name]))).to_s
         results << new(result)
       end
     end
@@ -35,12 +37,18 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose, :parent => Puppet::Provider::
     nsc = connection
     nsc.login
     @site_name =  @property_flush.key?(:site)? @property_flush[:site] : @resource[:site]
+    @operational =  @property_flush.key?(:operational)? @property_flush[:operational] : @resource[:operational]
     if @property_flush[:ensure] == :absent
       nsc.list_sites.collect do |site_summary| 
         Puppet.debug("remove #{@resource[:name]}")
         site = Site.load(nsc, site_summary.id)
         if site.assets.include? HostName.new(@resource[:name])
           site.assets = site.assets.reject { |asset| asset == HostName.new(@resource[:name]) }
+          if @operational == 'true'
+            site.exclude = site.exclude.reject { |exclude| exclude == HostName.new(@resource[:name]) }
+          else
+            site.exclude.push(HostName.new(@resource[:name]))
+          end
           site.save(nsc)
         end
       end
@@ -50,6 +58,11 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose, :parent => Puppet::Provider::
         Puppet.debug("add #{@resource[:name]}")
         site = Site.load(nsc, site_summary.id)
         site.add_host(@resource[:name])
+        if @operational == 'true'
+          site.exclude = site.exclude.reject { |exclude| exclude == HostName.new(@resource[:name]) }
+        else
+          site.exclude.push(HostName.new(@resource[:name]))
+        end
         site.save(nsc)
       else
         Puppet.warn("Unable to add @resource[:name] as @site_name dose not exist")

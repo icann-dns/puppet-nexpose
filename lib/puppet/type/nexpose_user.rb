@@ -31,7 +31,6 @@ Puppet::Type.newtype(:nexpose_user) do
         newvalues(/[\w\.\%\+\-]+\@[a-zA-Z\d\-\.]+/)
     end
 
-
     newproperty(:enabled ) do
         desc 'is the user enabled'
         defaultto(:true)
