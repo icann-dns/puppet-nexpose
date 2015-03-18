@@ -65,7 +65,7 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose, :parent => Puppet::Provider::
         end
         site.save(nsc)
       else
-        Puppet.warn("Unable to add @resource[:name] as @site_name dose not exist")
+        Puppet.warning("Unable to add #{@resource[:name]} as #{@site_name} does not exist")
       end
     end
   end
