@@ -41,6 +41,16 @@ Puppet::Type.newtype(:nexpose_user) do
         end
     end
 
+    newproperty(:source ) do
+        desc 'authentication source'
+    end
+
+    newproperty(:module ) do
+        desc 'authentication module'
+        defaultto(:xml)
+        newvalues(:ldap, :xml)
+    end
+
     newproperty(:role ) do
         desc 'user role'
         isrequired
