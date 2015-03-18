@@ -26,7 +26,7 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose, :parent => Puppet::Provider::
         result = { :ensure => :present }
         result[:name] = asset.host
         result[:site] = site.name
-        result[:operational] = (not site.exclude.include?(HostName.new(result[:name]))).to_s
+        result[:operational] = (not site.exclude.include?(HostName.new(result[:name])))
         results << new(result)
       end
     end
@@ -44,11 +44,6 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose, :parent => Puppet::Provider::
         site = Site.load(nsc, site_summary.id)
         if site.assets.include? HostName.new(@resource[:name])
           site.assets = site.assets.reject { |asset| asset == HostName.new(@resource[:name]) }
-          if @operational == 'true'
-            site.exclude = site.exclude.reject { |exclude| exclude == HostName.new(@resource[:name]) }
-          else
-            site.exclude.push(HostName.new(@resource[:name]))
-          end
           site.save(nsc)
         end
       end
@@ -58,9 +53,11 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose, :parent => Puppet::Provider::
         Puppet.debug("add #{@resource[:name]}")
         site = Site.load(nsc, site_summary.id)
         site.add_host(@resource[:name])
-        if @operational == 'true'
+        if @operational
+          Puppet.debug("enable #{@resource[:name]}")
           site.exclude = site.exclude.reject { |exclude| exclude == HostName.new(@resource[:name]) }
         else
+          Puppet.debug("disable #{@resource[:name]}")
           site.exclude.push(HostName.new(@resource[:name]))
         end
         site.save(nsc)
