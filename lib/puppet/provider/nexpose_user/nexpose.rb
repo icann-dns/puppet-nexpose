@@ -26,6 +26,8 @@ Puppet::Type.type(:nexpose_user).provide(:nexpose, :parent => Puppet::Provider::
       Puppet.debug("Collecting #{user.name}")
       result = { :ensure => :present }
       result[:name] = user.name
+      result[:source] = user_summary.auth_source
+      result[:module] = user_summary.auth_module
       result[:full_name] = user.full_name
       result[:email] = user.email
       result[:role] = user.role_name
