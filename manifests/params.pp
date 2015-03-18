@@ -31,7 +31,7 @@ class nexpose::params {
   $ldap_port             = 636
   $ldap_ssl              = true
   $ldap_base             = undef
-  $ldap_follow_referrals = true
+  $ldap_follow_referrals = false
   $ldap_email_map        = 'mail'
   $ldap_login_map        = 'sAMAccountName'
   $ldap_fullname_map     = 'cn'
