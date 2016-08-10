@@ -25,7 +25,7 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose, :parent => Puppet::Provider::
         Puppet.debug("Collecting #{asset.host}")
         result = { :ensure => :present }
         result[:name] = asset.host
-        result[:site] = site.name
+        result[:nexpose_site] = site.name
         result[:operational] = (not site.exclude.include?(HostName.new(result[:name])))
         results << new(result)
       end
@@ -36,7 +36,7 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose, :parent => Puppet::Provider::
   def flush
     nsc = connection
     nsc.login
-    @site_name =  @property_flush.key?(:site)? @property_flush[:site] : @resource[:site]
+    @site_name =  @property_flush.key?(:nexpose_site)? @property_flush[:nexpose_site] : @resource[:nexpose_site]
     @operational =  @property_flush.key?(:operational)? @property_flush[:operational] : @resource[:operational]
     if @property_flush[:ensure] == :absent
       nsc.list_sites.collect do |site_summary| 

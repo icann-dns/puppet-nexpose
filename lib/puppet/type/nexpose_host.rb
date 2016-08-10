@@ -19,7 +19,7 @@ Puppet::Type.newtype(:nexpose_host) do
         newvalues(/[\w\-\.]+/)
     end
 
-    newproperty(:site ) do
+    newproperty(:nexpose_site ) do
         desc "site to use"
         isrequired
         newvalues(/\w+/)
