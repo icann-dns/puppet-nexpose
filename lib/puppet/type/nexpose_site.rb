@@ -3,7 +3,7 @@ Puppet::Type.newtype(:nexpose_site) do
 
     ensurable
 
-    newparam(:site, :namevar => true) do
+    newparam(:name, :namevar => true) do
         desc 'Name of the site'
     end
 
