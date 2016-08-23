@@ -1,6 +1,6 @@
 {
   "name": "icann-nexpose",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "b4ldr",
   "summary": "Install and configure rapid7 zabbix",
   "license": "BSD 2 Clause",
