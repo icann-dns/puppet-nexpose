@@ -1,0 +1,14 @@
+fixtures:
+    symlinks:
+      nexpose: "#{source_dir}"
+    repositories:
+      stdlib:
+        repo: https://github.com/puppetlabs/puppetlabs-stdlib.git
+        ref: 4.12.0
+      puppetserver_gem:
+        repo: https://github.com/puppetlabs/puppetlabs-puppetserver_gem.git
+        ref: 0.2.0
+      tea:
+        repo: https://github.com/icann-dns/puppet-tea.git
+        ref: v0.2.5
+    forge_modules:
