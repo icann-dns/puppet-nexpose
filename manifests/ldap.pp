@@ -1,18 +1,15 @@
 # Class: nexpose::ldap
 class nexpose::ldap (
-  $ldap_name             = $::nexpose::params::ldap_name,
-  $ldap_server           = $::nexpose::params::ldap_server,
-  $ldap_port             = $::nexpose::params::ldap_port,
-  $ldap_ssl              = $::nexpose::params::ldap_ssl,
-  $ldap_base             = $::nexpose::params::ldap_base,
-  $ldap_follow_referrals = $::nexpose::params::ldap_follow_referrals,
-  $ldap_email_map        = $::nexpose::params::ldap_email_map,
-  $ldap_login_map        = $::nexpose::params::ldap_login_map,
-  $ldap_fullname_map     = $::nexpose::params::ldap_fullname_map,
-) inherits nexpose::params {
-  if ! $ldap_server {
-    fail('nexpose::ldap you need to set ldap_server')
-  }
+  String           $ldap_name             = 'ldap',
+  Tea::Host        $ldap_server           = undef,
+  Tea::Port        $ldap_port             = 636,
+  Boolean          $ldap_ssl              = true,
+  Boolean          $ldap_follow_referrals = false,
+  String           $ldap_email_map        = 'mail',
+  String           $ldap_login_map        = 'sAMAccountName',
+  String           $ldap_fullname_map     = 'cn',
+  Optional[String] $ldap_base             = undef,
+) {
   if $ldap_ssl {
     $real_ldap_ssl = 1
   } else {
@@ -27,6 +24,7 @@ class nexpose::ldap (
     context => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
     incl    => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
     lens    => 'Xml.lns',
+    notify  => Service['nexposeconsole.rc'],
     changes => [
       'set Authentication/LDAPAuthenticator/#attribute/enabled 1',
       "set Authentication/LDAPAuthenticator/#attribute/name ${ldap_name}",
@@ -41,15 +39,14 @@ class nexpose::ldap (
       "set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map='user.fullname']/#attribute/map user.fullname",
       "set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map='user.fullname']/#attribute/name ${ldap_fullname_map}",
       ],
-      notify  => Service['nexposeconsole.rc'];
   }
   if $ldap_base {
     augeas {'/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap_base':
       context => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
       incl    => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
       lens    => 'Xml.lns',
+      notify  => Service['nexposeconsole.rc'],
       changes => [ "set Authentication/LDAPAuthenticator/#attribute/searchBase ${ldap_base}" ],
-        notify  => Service['nexposeconsole.rc'];
     }
   }
 }
