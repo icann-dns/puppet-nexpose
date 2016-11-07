@@ -67,7 +67,7 @@ describe 'nexpose' do
         it do
           is_expected.to contain_package('nexpose').with(
             'ensure' => '0.9.8',
-            'provider' => 'pe_gem',
+            'provider' => 'puppet_gem',
           )
         end
         it do
