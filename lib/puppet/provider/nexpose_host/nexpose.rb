@@ -1,5 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'nexpose'))
-Puppet::Type.type(:nexpose_host).provide(:nexpose, :parent => Puppet::Provider::Nexpose ) do
+Puppet::Type.type(:nexpose_host).provide(:nexpose, :parent => Puppet::Provider::Nexpose) do
 
   defaultfor :kernel => 'Linux'
   mk_resource_methods

@@ -10,6 +10,7 @@ class nexpose::ldap (
   String           $ldap_fullname_map     = 'cn',
   Optional[String] $ldap_base             = undef,
 ) {
+  include ::nexpose
   if $ldap_ssl {
     $real_ldap_ssl = 1
   } else {

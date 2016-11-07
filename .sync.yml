@@ -5,4 +5,15 @@ Gemfile:
       - gem: nexpose
         version: 0.9.8
 .travis.yml:
+  include:
+  - rvm: 2.1.9
+    env: PUPPET_VERSION="~> 4.0" CHECK=test
+  - rvm: 2.2.5
+    env: PUPPET_VERSION="~> 4.0" CHECK=test
+  - rvm: 2.3.1
+    env: PUPPET_VERSION="~> 4.0" CHECK=build DEPLOY_TO_FORGE=yes
+  - rvm: 2.3.1
+    env: PUPPET_VERSION="~> 4.0" CHECK=test
+  - rvm: 2.4.0-preview1
+    env: PUPPET_VERSION="~> 4.0" CHECK=test
   secure: "HW/KLoxdZdlk7zjjTOm2Jpe90fLRXcd3Sf2Wm+ZxEuXJoAmsFt5Q2NPMJR64AThd9IKr2uzgol+Y+YdseFo2qHLv94rwkZV+cUXKrAhvhQmsChdMGkn75eftO6GfdJlaqsFeqtmM4jBo5NjrQbJxXZJJEsWVGuFNuz+uxb5OVKizdjqV1v5uVP3uuKjseKONCm26u0cWbQiQu0PPgTB5c6OKuwNsl9+KAWFz510P8FFeSbj0Q1o090yFS8rRp6lUY1sEwmA50Y2F2bs6CpOE+DRRfwdyntzZ3UIEGa9VdRKAUJ+pcnRQ6n0ZgZ5XVV3e03GKaTr84u4ccHhpzITFxj3KrMCxNdC0jN2EzOK5t9P50D3xYKPAU49/r9E5mVn5I1ZTmvCSlkE4wNfpvHxyxiS1k3ILYi7rKWXtIjDiy2x2rdOEUpGDVxB9rbZMn0WdZuK6XNufuspaxdmJ0wRfqnRJhHu+WCWQBn0E24/09pesE5+/DdfaolJMQZixloNFeZKmhvf0hMWUxL3g1+Ar9tDd6U99/ibrJ5nFYwmu4a+wyS4xAFp2RYtoteU+6farnL0cY5/bPMYOQxdT28jhvLrFWI3yp0a1r4Os9bYgikTQWMJQL7vHuBQMU+INYlJHU44JbvoJOA2OQC/WlcJRMySZl/mUH00Mr229ZzzI+WY="

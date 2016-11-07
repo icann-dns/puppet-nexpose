@@ -21,14 +21,14 @@ describe 'nexpose::ldap' do
   # while all required parameters will require you to add a value
   let(:params) do
     {
-      #:ldap_name => "ldap",
-      #:ldap_server => :undef,
-      #:ldap_port => "636",
+      #:ldap_name => 'ldap',
+      ldap_server: 'ldap.example.com',
+      #:ldap_port => '636',
       #:ldap_ssl => true,
       #:ldap_follow_referrals => false,
-      #:ldap_email_map => "mail",
-      #:ldap_login_map => "sAMAccountName",
-      #:ldap_fullname_map => "cn",
+      #:ldap_email_map => 'mail',
+      #:ldap_login_map => 'sAMAccountName',
+      #:ldap_fullname_map => 'cn',
       #:ldap_base => :undef,
 
     }
@@ -39,91 +39,283 @@ describe 'nexpose::ldap' do
   # This will need to get moved
   # it { pp catalogue.resources }
   on_supported_os.each do |os, facts|
-    context "on #{os}" do
+    context 'on #{os}' do
       let(:facts) do
         facts
       end
-      case facts[:operatingsystem]
-      when 'Ubuntu'
-        case facts['lsbdistcodename']
-        when 'precise'
-        else
-        end
-      else
-      end
       describe 'check default config' do
         it { is_expected.to compile.with_all_deps }
-
-        
-  it do
-    is_expected.to contain_augeas("/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap")
-        .with({
-          "context" => "/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole",
-          "incl" => "/opt/rapid7/nexpose/nsc/conf/nsc.xml",
-          "lens" => "Xml.lns",
-          "notify" => "Service[nexposeconsole.rc]",
-          "changes" => ["set Authentication/LDAPAuthenticator/#attribute/enabled 1", "set Authentication/LDAPAuthenticator/#attribute/name ldap", "set Authentication/LDAPAuthenticator/#attribute/server undef", "set Authentication/LDAPAuthenticator/#attribute/port 636", "set Authentication/LDAPAuthenticator/#attribute/ssl $real_ldap_ssl", "set Authentication/LDAPAuthenticator/#attribute/followReferrals $real_ldap_follow_referrals", "set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map='user.email']/#attribute/map user.email", "set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map='user.email']/#attribute/name mail", "set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map='user.login']/#attribute/map user.login", "set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map='user.login']/#attribute/name sAMAccountName", "set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map='user.fullname']/#attribute/map user.fullname", "set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map='user.fullname']/#attribute/name cn"],
-          })
-  end
-  
-        
-  it do
-    is_expected.to contain_augeas("/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap_base")
-        .with({
-          "context" => "/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole",
-          "incl" => "/opt/rapid7/nexpose/nsc/conf/nsc.xml",
-          "lens" => "Xml.lns",
-          "notify" => "Service[nexposeconsole.rc]",
-          "changes" => ["set Authentication/LDAPAuthenticator/#attribute/searchBase undef"],
-          })
-  end
-  
+        it { is_expected.to contain_class('nexpose') }
+        it { is_expected.to contain_class('nexpose::ldap') }
+        it do
+          is_expected.to contain_augeas(
+            '/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap'
+          ).with(
+            'context' => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
+            'incl' => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
+            'lens' => 'Xml.lns',
+            'notify' => 'Service[nexposeconsole.rc]',
+            'changes' => [
+              'set Authentication/LDAPAuthenticator/#attribute/enabled 1',
+              'set Authentication/LDAPAuthenticator/#attribute/name ldap',
+              'set Authentication/LDAPAuthenticator/#attribute/server ldap.example.com',
+              'set Authentication/LDAPAuthenticator/#attribute/port 636',
+              'set Authentication/LDAPAuthenticator/#attribute/ssl 1',
+              'set Authentication/LDAPAuthenticator/#attribute/followReferrals 0',
+              'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/map user.email',
+              'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/name mail',
+              'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
+              'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
+              'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
+              'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+          )
+        end
+        it do
+          is_expected.not_to contain_augeas(
+            '/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap_base'
+          )
+        end
       end
       describe 'Change Defaults' do
         context 'ldap_name' do
-          before { params.merge!(ldap_name: 'XXXchangemeXXX') }
+          before { params.merge!(ldap_name: 'foobar') }
           it { is_expected.to compile }
           # Add Check to validate change was successful
+          it do
+            is_expected.to contain_augeas(
+              '/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap'
+            ).with(
+              'context' => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
+              'incl' => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
+              'lens' => 'Xml.lns',
+              'notify' => 'Service[nexposeconsole.rc]',
+              'changes' => [
+                'set Authentication/LDAPAuthenticator/#attribute/enabled 1',
+                'set Authentication/LDAPAuthenticator/#attribute/name foobar',
+                'set Authentication/LDAPAuthenticator/#attribute/server ldap.example.com',
+                'set Authentication/LDAPAuthenticator/#attribute/port 636',
+                'set Authentication/LDAPAuthenticator/#attribute/ssl 1',
+                'set Authentication/LDAPAuthenticator/#attribute/followReferrals 0',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/map user.email',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/name mail',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+            )
+          end
         end
         context 'ldap_server' do
-          before { params.merge!(ldap_server: 'XXXchangemeXXX') }
+          before { params.merge!(ldap_server: 'foobar.example.com') }
           it { is_expected.to compile }
           # Add Check to validate change was successful
+          it do
+            is_expected.to contain_augeas(
+              '/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap'
+            ).with(
+              'context' => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
+              'incl' => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
+              'lens' => 'Xml.lns',
+              'notify' => 'Service[nexposeconsole.rc]',
+              'changes' => [
+                'set Authentication/LDAPAuthenticator/#attribute/enabled 1',
+                'set Authentication/LDAPAuthenticator/#attribute/name ldap',
+                'set Authentication/LDAPAuthenticator/#attribute/server foobar.example.com',
+                'set Authentication/LDAPAuthenticator/#attribute/port 636',
+                'set Authentication/LDAPAuthenticator/#attribute/ssl 1',
+                'set Authentication/LDAPAuthenticator/#attribute/followReferrals 0',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/map user.email',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/name mail',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+            )
+          end
         end
         context 'ldap_port' do
-          before { params.merge!(ldap_port: 'XXXchangemeXXX') }
+          before { params.merge!(ldap_port: 1337) }
           it { is_expected.to compile }
           # Add Check to validate change was successful
+          it do
+            is_expected.to contain_augeas(
+              '/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap'
+            ).with(
+              'context' => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
+              'incl' => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
+              'lens' => 'Xml.lns',
+              'notify' => 'Service[nexposeconsole.rc]',
+              'changes' => [
+                'set Authentication/LDAPAuthenticator/#attribute/enabled 1',
+                'set Authentication/LDAPAuthenticator/#attribute/name ldap',
+                'set Authentication/LDAPAuthenticator/#attribute/server ldap.example.com',
+                'set Authentication/LDAPAuthenticator/#attribute/port 1337',
+                'set Authentication/LDAPAuthenticator/#attribute/ssl 1',
+                'set Authentication/LDAPAuthenticator/#attribute/followReferrals 0',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/map user.email',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/name mail',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+            )
+          end
         end
         context 'ldap_ssl' do
-          before { params.merge!(ldap_ssl: 'XXXchangemeXXX') }
+          before { params.merge!(ldap_ssl: false) }
           it { is_expected.to compile }
           # Add Check to validate change was successful
+          it do
+            is_expected.to contain_augeas(
+              '/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap'
+            ).with(
+              'context' => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
+              'incl' => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
+              'lens' => 'Xml.lns',
+              'notify' => 'Service[nexposeconsole.rc]',
+              'changes' => [
+                'set Authentication/LDAPAuthenticator/#attribute/enabled 1',
+                'set Authentication/LDAPAuthenticator/#attribute/name ldap',
+                'set Authentication/LDAPAuthenticator/#attribute/server ldap.example.com',
+                'set Authentication/LDAPAuthenticator/#attribute/port 636',
+                'set Authentication/LDAPAuthenticator/#attribute/ssl 0',
+                'set Authentication/LDAPAuthenticator/#attribute/followReferrals 0',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/map user.email',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/name mail',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+            )
+          end
         end
         context 'ldap_follow_referrals' do
-          before { params.merge!(ldap_follow_referrals: 'XXXchangemeXXX') }
+          before { params.merge!(ldap_follow_referrals: true) }
           it { is_expected.to compile }
           # Add Check to validate change was successful
+          it do
+            is_expected.to contain_augeas(
+              '/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap'
+            ).with(
+              'context' => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
+              'incl' => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
+              'lens' => 'Xml.lns',
+              'notify' => 'Service[nexposeconsole.rc]',
+              'changes' => [
+                'set Authentication/LDAPAuthenticator/#attribute/enabled 1',
+                'set Authentication/LDAPAuthenticator/#attribute/name ldap',
+                'set Authentication/LDAPAuthenticator/#attribute/server ldap.example.com',
+                'set Authentication/LDAPAuthenticator/#attribute/port 636',
+                'set Authentication/LDAPAuthenticator/#attribute/ssl 1',
+                'set Authentication/LDAPAuthenticator/#attribute/followReferrals 1',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/map user.email',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/name mail',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+            )
+          end
         end
         context 'ldap_email_map' do
-          before { params.merge!(ldap_email_map: 'XXXchangemeXXX') }
+          before { params.merge!(ldap_email_map: 'foobar') }
           it { is_expected.to compile }
           # Add Check to validate change was successful
+          it do
+            is_expected.to contain_augeas(
+              '/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap'
+            ).with(
+              'context' => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
+              'incl' => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
+              'lens' => 'Xml.lns',
+              'notify' => 'Service[nexposeconsole.rc]',
+              'changes' => [
+                'set Authentication/LDAPAuthenticator/#attribute/enabled 1',
+                'set Authentication/LDAPAuthenticator/#attribute/name ldap',
+                'set Authentication/LDAPAuthenticator/#attribute/server ldap.example.com',
+                'set Authentication/LDAPAuthenticator/#attribute/port 636',
+                'set Authentication/LDAPAuthenticator/#attribute/ssl 1',
+                'set Authentication/LDAPAuthenticator/#attribute/followReferrals 0',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/map user.email',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/name foobar',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+            )
+          end
         end
         context 'ldap_login_map' do
-          before { params.merge!(ldap_login_map: 'XXXchangemeXXX') }
+          before { params.merge!(ldap_login_map: 'foobar') }
           it { is_expected.to compile }
           # Add Check to validate change was successful
+          it do
+            is_expected.to contain_augeas(
+              '/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap'
+            ).with(
+              'context' => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
+              'incl' => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
+              'lens' => 'Xml.lns',
+              'notify' => 'Service[nexposeconsole.rc]',
+              'changes' => [
+                'set Authentication/LDAPAuthenticator/#attribute/enabled 1',
+                'set Authentication/LDAPAuthenticator/#attribute/name ldap',
+                'set Authentication/LDAPAuthenticator/#attribute/server ldap.example.com',
+                'set Authentication/LDAPAuthenticator/#attribute/port 636',
+                'set Authentication/LDAPAuthenticator/#attribute/ssl 1',
+                'set Authentication/LDAPAuthenticator/#attribute/followReferrals 0',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/map user.email',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/name mail',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name foobar',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+            )
+          end
         end
         context 'ldap_fullname_map' do
-          before { params.merge!(ldap_fullname_map: 'XXXchangemeXXX') }
+          before { params.merge!(ldap_fullname_map: 'foobar') }
           it { is_expected.to compile }
           # Add Check to validate change was successful
+          it do
+            is_expected.to contain_augeas(
+              '/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap'
+            ).with(
+              'context' => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
+              'incl' => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
+              'lens' => 'Xml.lns',
+              'notify' => 'Service[nexposeconsole.rc]',
+              'changes' => [
+                'set Authentication/LDAPAuthenticator/#attribute/enabled 1',
+                'set Authentication/LDAPAuthenticator/#attribute/name ldap',
+                'set Authentication/LDAPAuthenticator/#attribute/server ldap.example.com',
+                'set Authentication/LDAPAuthenticator/#attribute/port 636',
+                'set Authentication/LDAPAuthenticator/#attribute/ssl 1',
+                'set Authentication/LDAPAuthenticator/#attribute/followReferrals 0',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/map user.email',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.email\']/#attribute/name mail',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name foobar']
+            )
+          end
         end
         context 'ldap_base' do
-          before { params.merge!(ldap_base: 'XXXchangemeXXX') }
+          before { params.merge!(ldap_base: 'foobar') }
           it { is_expected.to compile }
           # Add Check to validate change was successful
+          it do
+            is_expected.to contain_augeas(
+              '/opt/rapid7/nexpose/nsc/conf/nsc.xml_ldap_base'
+            ).with(
+              'context' => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
+              'incl' => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
+              'lens' => 'Xml.lns',
+              'notify' => 'Service[nexposeconsole.rc]',
+              'changes' => ['set Authentication/LDAPAuthenticator/#attribute/searchBase foobar'],
+              )
+          end
         end
       end
       describe 'check bad type' do
@@ -140,11 +332,11 @@ describe 'nexpose::ldap' do
           it { expect { subject.call }.to raise_error(Puppet::Error) }
         end
         context 'ldap_ssl' do
-          before { params.merge!(ldap_ssl: true) }
+          before { params.merge!(ldap_ssl: 'foobar') }
           it { expect { subject.call }.to raise_error(Puppet::Error) }
         end
         context 'ldap_follow_referrals' do
-          before { params.merge!(ldap_follow_referrals: true) }
+          before { params.merge!(ldap_follow_referrals: 'foobar') }
           it { expect { subject.call }.to raise_error(Puppet::Error) }
         end
         context 'ldap_email_map' do

@@ -2,14 +2,14 @@ require 'nexpose'
 include Nexpose
 
 class Puppet::Provider::Nexpose < Puppet::Provider
-
-  def self.get_config
+  def self.config
     @api_file = '/opt/rapid7/nexpose/nsc/conf/api.conf'
-    @conf     = { 
+    @conf     = {
       'user'     => 'nxadmin',
       'password' => 'nxpassword',
       'server'   => 'localhost',
-      'port'     => 443}
+      'port'     => 443
+    }
     if File.file?(@api_file)
       File.open(@api_file, 'r') do |f|
         f.each_line do |line|
@@ -22,16 +22,16 @@ class Puppet::Provider::Nexpose < Puppet::Provider
   end
 
   def self.connection
-    @conf = get_config
+    @conf = config
     Connection.new(@conf['server'], @conf['user'], @conf['password'], @conf['port'])
   end
 
   def self.check_password(user, password)
-    @conf = get_config
+    @conf = config
     nsc = Connection.new(@conf['server'], user, password, @conf['port'])
     begin
       nsc.login
-    rescue 
+    rescue
       false
     end
   end
@@ -43,5 +43,4 @@ class Puppet::Provider::Nexpose < Puppet::Provider
   def check_password(user, password)
     self.class.check_password(user, password)
   end
-
 end
