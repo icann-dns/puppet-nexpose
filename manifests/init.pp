@@ -30,7 +30,7 @@ class nexpose (
 ) {
   package { 'nexpose':
     ensure   =>  '0.9.8',
-    provider =>  'puppetserver_gem',
+    provider =>  'pe_gem',
   }
   file {
     '/opt/rapid7/nexpose/nsc/conf/httpd.xml':

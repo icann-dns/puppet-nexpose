@@ -5,9 +5,9 @@ fixtures:
       stdlib:
         repo: https://github.com/puppetlabs/puppetlabs-stdlib.git
         ref: 4.12.0
-      puppetserver_gem:
-        repo: https://github.com/puppetlabs/puppetlabs-puppetserver_gem.git
-        ref: 0.2.0
+      pe_gem:
+        repo: https://github.com/puppetlabs/puppetlabs-pe_gem.git
+        ref: 0.1.2
       tea:
         repo: https://github.com/icann-dns/puppet-tea.git
         ref: v0.2.5
