@@ -1,6 +1,6 @@
 {
   "name": "icann-nexpose",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": "john.bond@icann.org",
   "summary": "Install and configure rapid7 nexpose",
   "license": "MPL-2.0",
