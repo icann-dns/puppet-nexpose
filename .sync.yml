@@ -1,6 +1,6 @@
 ---
 Gemfile:
-  required:
+  optional:
     ':test':
       - gem: nexpose
         version: 0.9.8
