@@ -22,7 +22,7 @@ describe 'nexpose::ldap' do
   let(:params) do
     {
       #:ldap_name => 'ldap',
-      ldap_server: 'ldap.example.com',
+      ldap_server: 'ldap.example.com'
       #:ldap_port => '636',
       #:ldap_ssl => true,
       #:ldap_follow_referrals => false,
@@ -39,7 +39,7 @@ describe 'nexpose::ldap' do
   # This will need to get moved
   # it { pp catalogue.resources }
   on_supported_os.each do |os, facts|
-    context 'on #{os}' do
+    context "on #{os}" do
       let(:facts) do
         facts
       end
@@ -67,7 +67,8 @@ describe 'nexpose::ldap' do
               'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
               'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
               'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
-              'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+              'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn'
+            ]
           )
         end
         it do
@@ -101,7 +102,8 @@ describe 'nexpose::ldap' do
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
-                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn'
+              ]
             )
           end
         end
@@ -129,7 +131,8 @@ describe 'nexpose::ldap' do
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
-                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn'
+              ]
             )
           end
         end
@@ -157,7 +160,8 @@ describe 'nexpose::ldap' do
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
-                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn'
+              ]
             )
           end
         end
@@ -185,7 +189,8 @@ describe 'nexpose::ldap' do
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
-                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn'
+              ]
             )
           end
         end
@@ -213,7 +218,8 @@ describe 'nexpose::ldap' do
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
-                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn'
+              ]
             )
           end
         end
@@ -241,7 +247,8 @@ describe 'nexpose::ldap' do
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
-                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn'
+              ]
             )
           end
         end
@@ -269,7 +276,8 @@ describe 'nexpose::ldap' do
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name foobar',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
-                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn']
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name cn'
+              ]
             )
           end
         end
@@ -297,7 +305,8 @@ describe 'nexpose::ldap' do
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/map user.login',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.login\']/#attribute/name sAMAccountName',
                 'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/map user.fullname',
-                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name foobar']
+                'set Authentication/LDAPAuthenticator/ldapAttribute[#attribute/map=\'user.fullname\']/#attribute/name foobar'
+              ]
             )
           end
         end
@@ -313,8 +322,10 @@ describe 'nexpose::ldap' do
               'incl' => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
               'lens' => 'Xml.lns',
               'notify' => 'Service[nexposeconsole.rc]',
-              'changes' => ['set Authentication/LDAPAuthenticator/#attribute/searchBase foobar'],
-              )
+              'changes' => [
+                'set Authentication/LDAPAuthenticator/#attribute/searchBase foobar'
+              ]
+            )
           end
         end
       end

@@ -67,12 +67,14 @@ describe 'nexpose' do
         it do
           is_expected.to contain_package('nexpose').with(
             'ensure' => '0.9.8',
-            'provider' => 'puppet_gem',
+            'provider' => 'puppet_gem'
           )
         end
         it do
-          is_expected.to contain_file('/opt/rapid7/nexpose/nsc/conf/httpd.xml').with(
-            'notify' => 'Service[nexposeconsole.rc]',
+          is_expected.to contain_file(
+            '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+          ).with(
+            'notify' => 'Service[nexposeconsole.rc]'
           ).with_content(
             %r{port\s+=\s+"3780"}
           ).with_content(
@@ -123,9 +125,9 @@ describe 'nexpose' do
         end
         it do
           is_expected.to contain_file('/opt/rapid7/nexpose/nsc/conf/api.conf').with(
-            'mode' => '0400',
+            'mode' => '0400'
           ).with_content(
-            "user=nxadmin\npassword=nxpassword\nserver=foo.example.com\nport=3780\n",
+            "user=nxadmin\npassword=nxpassword\nserver=foo.example.com\nport=3780\n"
           )
         end
         it do
@@ -139,14 +141,14 @@ describe 'nexpose' do
               'set WebServer/#attribute/maxThreads 100',
               'set WebServer/#attribute/failureLockout 4'
             ],
-            'notify' => 'Service[nexposeconsole.rc]',
+            'notify' => 'Service[nexposeconsole.rc]'
           )
         end
         it do
           is_expected.to contain_service('nexposeconsole.rc').with(
             'ensure' => 'running',
             'enable' => true,
-            'require' => 'File[/opt/rapid7/nexpose/nsc/conf/httpd.xml]',
+            'require' => 'File[/opt/rapid7/nexpose/nsc/conf/httpd.xml]'
           )
         end
         it do
@@ -155,7 +157,7 @@ describe 'nexpose' do
             'enabled' => true,
             'password' => 'nxpassword',
             'full_name' => 'Puppet API User',
-            'role' => 'global-admin',
+            'role' => 'global-admin'
           )
         end
       end
@@ -186,7 +188,7 @@ describe 'nexpose' do
             is_expected.to contain_file(
               '/opt/rapid7/nexpose/nsc/conf/api.conf'
             ).with_content(
-              "user=nxadmin\npassword=nxpassword\nserver=foo.example.com\nport=1337\n",
+              "user=nxadmin\npassword=nxpassword\nserver=foo.example.com\nport=1337\n"
             )
           end
         end
@@ -475,7 +477,7 @@ describe 'nexpose' do
             is_expected.to contain_file(
               '/opt/rapid7/nexpose/nsc/conf/api.conf'
             ).with_content(
-              "user=nxadmin\npassword=nxpassword\nserver=foobar.example.com\nport=3780\n",
+              "user=nxadmin\npassword=nxpassword\nserver=foobar.example.com\nport=3780\n"
             )
           end
         end
@@ -486,7 +488,7 @@ describe 'nexpose' do
             is_expected.to contain_file(
               '/opt/rapid7/nexpose/nsc/conf/api.conf'
             ).with_content(
-              "user=foobar\npassword=nxpassword\nserver=foo.example.com\nport=3780\n",
+              "user=foobar\npassword=nxpassword\nserver=foo.example.com\nport=3780\n"
             )
           end
           it do
@@ -495,7 +497,7 @@ describe 'nexpose' do
               'enabled' => true,
               'password' => 'nxpassword',
               'full_name' => 'Puppet API User',
-              'role' => 'global-admin',
+              'role' => 'global-admin'
             )
           end
         end
@@ -506,7 +508,7 @@ describe 'nexpose' do
             is_expected.to contain_file(
               '/opt/rapid7/nexpose/nsc/conf/api.conf'
             ).with_content(
-              "user=nxadmin\npassword=foobar\nserver=foo.example.com\nport=3780\n",
+              "user=nxadmin\npassword=foobar\nserver=foo.example.com\nport=3780\n"
             )
           end
           it do
@@ -515,7 +517,7 @@ describe 'nexpose' do
               'enabled' => true,
               'password' => 'foobar',
               'full_name' => 'Puppet API User',
-              'role' => 'global-admin',
+              'role' => 'global-admin'
             )
           end
         end
