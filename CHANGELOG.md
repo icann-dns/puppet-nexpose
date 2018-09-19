@@ -1,3 +1,7 @@
+### 2018-09-19 0.2.0
+* update service name
+* convert to PDK
+
 ### 2016-11-07 0.1.5
 * use puppet_gem
 
