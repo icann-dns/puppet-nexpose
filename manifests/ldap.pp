@@ -1,8 +1,8 @@
 # Class: nexpose::ldap
 class nexpose::ldap (
   String           $ldap_name             = 'ldap',
-  Tea::Host        $ldap_server           = undef,
-  Tea::Port        $ldap_port             = 636,
+  Stdlib::Host     $ldap_server           = undef,
+  Stdlib::Port     $ldap_port             = 636,
   Boolean          $ldap_ssl              = true,
   Boolean          $ldap_follow_referrals = false,
   String           $ldap_email_map        = 'mail',
@@ -25,7 +25,7 @@ class nexpose::ldap (
     context => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
     incl    => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
     lens    => 'Xml.lns',
-    notify  => Service['nexposeconsole.rc'],
+    notify  => Service['nexposeconsole'],
     changes => [
       'set Authentication/LDAPAuthenticator/#attribute/enabled 1',
       "set Authentication/LDAPAuthenticator/#attribute/name ${ldap_name}",
@@ -46,7 +46,7 @@ class nexpose::ldap (
       context => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
       incl    => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
       lens    => 'Xml.lns',
-      notify  => Service['nexposeconsole.rc'],
+      notify  => Service['nexposeconsole'],
       changes => [ "set Authentication/LDAPAuthenticator/#attribute/searchBase ${ldap_base}" ],
     }
   }

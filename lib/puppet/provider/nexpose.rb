@@ -1,6 +1,7 @@
 require 'nexpose'
 include Nexpose
 
+# Nexpose class
 class Puppet::Provider::Nexpose < Puppet::Provider
   def self.config
     @api_file = '/opt/rapid7/nexpose/nsc/conf/api.conf'
@@ -8,7 +9,7 @@ class Puppet::Provider::Nexpose < Puppet::Provider
       'user'     => 'nxadmin',
       'password' => 'nxpassword',
       'server'   => 'localhost',
-      'port'     => 443
+      'port'     => 443,
     }
     if File.file?(@api_file)
       File.open(@api_file, 'r') do |f|

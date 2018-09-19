@@ -1,7 +1,7 @@
 # == Class: nexpose
 #
 class nexpose (
-  Tea::Port          $port                 = 3780,
+  Stdlib::Port       $port                 = 3780,
   String             $server_root          = '.',
   String             $doc_root             = 'htroot',
   Integer[1,1000]    $min_server_threads   = 10,
@@ -24,7 +24,7 @@ class nexpose (
   String             $server_id_string     = 'NSC/0.6.4 (JVM)',
   String             $proglet_list         = 'conf/proglet.xml',
   String             $taglib_list          = 'conf/taglibs.xml',
-  Tea::Fqdn          $virtualhost          = $::fqdn,
+  Stdlib::Fqdn       $virtualhost          = $::fqdn,
   String             $api_user             = 'nxadmin',
   String             $api_password         = 'nxpassword',
 ) {
@@ -34,7 +34,7 @@ class nexpose (
   }
   file {
     '/opt/rapid7/nexpose/nsc/conf/httpd.xml':
-      notify  => Service['nexposeconsole.rc'],
+      notify  => Service['nexposeconsole'],
       content => template('nexpose/httpd.xml.erb');
     '/opt/rapid7/nexpose/nsc/conf/api.conf':
       content => "user=${api_user}\npassword=${api_password}\nserver=${virtualhost}\nport=${port}\n",
@@ -50,9 +50,9 @@ class nexpose (
       "set WebServer/#attribute/maxThreads ${max_server_threads}",
       "set WebServer/#attribute/failureLockout ${bad_login_lockout}",
       ],
-    notify  => Service['nexposeconsole.rc'],
+    notify  => Service['nexposeconsole'],
   }
-  service { 'nexposeconsole.rc':
+  service { 'nexposeconsole':
     ensure  => running,
     enable  => true,
     require => File['/opt/rapid7/nexpose/nsc/conf/httpd.xml'],
@@ -60,8 +60,8 @@ class nexpose (
   user {'nexpose':
     password => '!';
   }
-  #There is a bit of a chicken egg situation with this one.  
-  #if we change the api password then the api function will fail
+  # There is a bit of a chicken egg situation with this one.  
+  # if we change the api password then the api function will fail
   nexpose_user {$api_user:
     ensure    => present,
     enabled   => true,

@@ -14,24 +14,24 @@ Puppet::Type.newtype(:nexpose_user) do
     end
   end
 
-  newparam(:username, :namevar => true) do
+  newparam(:username, namevar: true) do
     desc 'zabbix username'
   end
 
-  newproperty(:password ) do
+  newproperty(:password) do
     desc 'user password'
   end
 
-  newproperty(:full_name ) do
+  newproperty(:full_name) do
     desc 'users fullname'
   end
 
-  newproperty(:email ) do
+  newproperty(:email) do
     desc 'email address'
-    newvalues(/[\w\.\%\+\-]+\@[a-zA-Z\d\-\.]+/)
+    newvalues(%r{[\w\.\%\+\-]+\@[a-zA-Z\d\-\.]+})
   end
 
-  newproperty(:enabled ) do
+  newproperty(:enabled) do
     desc 'is the user enabled'
     defaultto(:true)
     newvalue(:true)
@@ -41,11 +41,11 @@ Puppet::Type.newtype(:nexpose_user) do
     end
   end
 
-  newproperty(:source ) do
+  newproperty(:source) do
     desc 'authentication source'
   end
 
-  newproperty(:module ) do
+  newproperty(:module) do
     desc 'authentication module'
     defaultto(:xml)
     newvalues(:ldap, :xml)
@@ -54,10 +54,10 @@ Puppet::Type.newtype(:nexpose_user) do
     end
   end
 
-  newproperty(:role ) do
+  newproperty(:role) do
     desc 'user role'
     isrequired
-    newvalues(:'user',  :'system-admin', :'controls-insight-only', :'global-admin', 
+    newvalues(:user, :'system-admin', :'controls-insight-only', :'global-admin',
               :'security-manager', :'site-admin')
   end
 end

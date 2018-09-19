@@ -50,6 +50,7 @@ describe 'nexpose' do
 
     }
   end
+
   # add these two lines in a single test block to enable puppet and hiera debug mode
   # Puppet::Util::Log.level = :debug
   # Puppet::Util::Log.newdestination(:console)
@@ -60,6 +61,7 @@ describe 'nexpose' do
       let(:facts) do
         facts
       end
+
       describe 'check default config' do
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('nexpose') }
@@ -67,67 +69,67 @@ describe 'nexpose' do
         it do
           is_expected.to contain_package('nexpose').with(
             'ensure' => '0.9.8',
-            'provider' => 'puppet_gem'
+            'provider' => 'puppet_gem',
           )
         end
         it do
           is_expected.to contain_file(
-            '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+            '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
           ).with(
-            'notify' => 'Service[nexposeconsole.rc]'
+            'notify' => 'Service[nexposeconsole]',
           ).with_content(
-            %r{port\s+=\s+"3780"}
+            %r{port\s+=\s+"3780"},
           ).with_content(
-            %r{serverRoot\s+=\s+"\."}
+            %r{serverRoot\s+=\s+"\."},
           ).with_content(
-            %r{docRoot\s+=\s+"htroot"}
+            %r{docRoot\s+=\s+"htroot"},
           ).with_content(
-            %r{min-server-threads\s+=\s+"10"}
+            %r{min-server-threads\s+=\s+"10"},
           ).with_content(
-            %r{max-server-threads\s+=\s+"100"}
+            %r{max-server-threads\s+=\s+"100"},
           ).with_content(
-            %r{keepalive\s+=\s+"false"}
+            %r{keepalive\s+=\s+"false"},
           ).with_content(
-            %r{socket-timeout\s+=\s+"10000"}
+            %r{socket-timeout\s+=\s+"10000"},
           ).with_content(
-            %r{sc-lookup-cache-size\s+=\s+"100"}
+            %r{sc-lookup-cache-size\s+=\s+"100"},
           ).with_content(
-            %r{debug\s+=\s+"10"}
+            %r{debug\s+=\s+"10"},
           ).with_content(
-            %r{httpd-error-strings\s+=\s+"conf/httpErrorStrings\.properties"}
+            %r{httpd-error-strings\s+=\s+"conf/httpErrorStrings\.properties"},
           ).with_content(
-            %r{default-start-page\s+=\s+"/starting\.html"}
+            %r{default-start-page\s+=\s+"/starting\.html"},
           ).with_content(
-            %r{default-login-page\s+=\s+"/login\.html"}
+            %r{default-login-page\s+=\s+"/login\.html"},
           ).with_content(
-            %r{default-home-page\s+=\s+"/home\.jsp"}
+            %r{default-home-page\s+=\s+"/home\.jsp"},
           ).with_content(
-            %r{default-setup-page\s+=\s+"/setup\.html"}
+            %r{default-setup-page\s+=\s+"/setup\.html"},
           ).with_content(
-            %r{default-error-page\s+=\s+"/error\.html"}
+            %r{default-error-page\s+=\s+"/error\.html"},
           ).with_content(
-            %r{first-time-config\s+=\s+"false"}
+            %r{first-time-config\s+=\s+"false"},
           ).with_content(
-            %r{bad-login-lockout\s+=\s+"4"}
+            %r{bad-login-lockout\s+=\s+"4"},
           ).with_content(
-            %r{admin-app-path\s+=\s+"/admin/global"}
+            %r{admin-app-path\s+=\s+"/admin/global"},
           ).with_content(
-            %r{auth-param-username\s+=\s+"nexposeccusername"}
+            %r{auth-param-username\s+=\s+"nexposeccusername"},
           ).with_content(
-            %r{auth-param-password\s+=\s+"nexposeccpassword"}
+            %r{auth-param-password\s+=\s+"nexposeccpassword"},
           ).with_content(
-            %r{server-id-string\s+=\s+"NSC/0\.6\.4 \(JVM\)"}
+            %r{server-id-string\s+=\s+"NSC/0\.6\.4 \(JVM\)"},
           ).with_content(
-            %r{proglet-list\s+=\s+"conf/proglet\.xml"}
+            %r{proglet-list\s+=\s+"conf/proglet\.xml"},
           ).with_content(
-            %r{taglib-list\s+=\s+"conf/taglibs\.xml"}
+            %r{taglib-list\s+=\s+"conf/taglibs\.xml"},
           )
         end
         it do
           is_expected.to contain_file('/opt/rapid7/nexpose/nsc/conf/api.conf').with(
-            'mode' => '0400'
+            'mode' => '0400',
           ).with_content(
-            "user=nxadmin\npassword=nxpassword\nserver=foo.example.com\nport=3780\n"
+            "user=nxadmin\npassword=nxpassword\nserver=nexpose.example.com\nport=3780\n",
           )
         end
         it do
@@ -139,16 +141,16 @@ describe 'nexpose' do
               'set WebServer/#attribute/port 3780',
               'set WebServer/#attribute/minThreads 10',
               'set WebServer/#attribute/maxThreads 100',
-              'set WebServer/#attribute/failureLockout 4'
+              'set WebServer/#attribute/failureLockout 4',
             ],
-            'notify' => 'Service[nexposeconsole.rc]'
+            'notify' => 'Service[nexposeconsole]',
           )
         end
         it do
-          is_expected.to contain_service('nexposeconsole.rc').with(
+          is_expected.to contain_service('nexposeconsole').with(
             'ensure' => 'running',
             'enable' => true,
-            'require' => 'File[/opt/rapid7/nexpose/nsc/conf/httpd.xml]'
+            'require' => 'File[/opt/rapid7/nexpose/nsc/conf/httpd.xml]',
           )
         end
         it do
@@ -157,338 +159,338 @@ describe 'nexpose' do
             'enabled' => true,
             'password' => 'nxpassword',
             'full_name' => 'Puppet API User',
-            'role' => 'global-admin'
+            'role' => 'global-admin',
           )
         end
       end
       describe 'Change Defaults' do
         context 'port' do
-          before { params.merge!(port: 1337) }
+          before(:each) { params.merge!(port: 1337) }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{port\s+=\s+"1337"}
+              %r{port\s+=\s+"1337"},
             )
           end
           it do
             is_expected.to contain_augeas(
-              '/opt/rapid7/nexpose/nsc/conf/nsc.xml'
+              '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
             ).with(
               'changes' => [
                 'set WebServer/#attribute/port 1337',
                 'set WebServer/#attribute/minThreads 10',
                 'set WebServer/#attribute/maxThreads 100',
-                'set WebServer/#attribute/failureLockout 4'
-              ]
+                'set WebServer/#attribute/failureLockout 4',
+              ],
             )
           end
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/api.conf'
+              '/opt/rapid7/nexpose/nsc/conf/api.conf',
             ).with_content(
-              "user=nxadmin\npassword=nxpassword\nserver=foo.example.com\nport=1337\n"
+              "user=nxadmin\npassword=nxpassword\nserver=nexpose.example.com\nport=1337\n",
             )
           end
         end
         context 'server_root' do
-          before { params.merge!(server_root: 'foobar') }
+          before(:each) { params.merge!(server_root: 'foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{serverRoot\s+=\s+"foobar"}
+              %r{serverRoot\s+=\s+"foobar"},
             )
           end
         end
         context 'doc_root' do
-          before { params.merge!(doc_root: 'foobar') }
+          before(:each) { params.merge!(doc_root: 'foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{docRoot\s+=\s+"foobar"}
+              %r{docRoot\s+=\s+"foobar"},
             )
           end
         end
         context 'min_server_threads' do
-          before { params.merge!(min_server_threads: 99) }
+          before(:each) { params.merge!(min_server_threads: 99) }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{min-server-threads\s+=\s+"99"}
+              %r{min-server-threads\s+=\s+"99"},
             )
           end
           it do
             is_expected.to contain_augeas(
-              '/opt/rapid7/nexpose/nsc/conf/nsc.xml'
+              '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
             ).with(
               'changes' => [
                 'set WebServer/#attribute/port 3780',
                 'set WebServer/#attribute/minThreads 99',
                 'set WebServer/#attribute/maxThreads 100',
-                'set WebServer/#attribute/failureLockout 4'
-              ]
+                'set WebServer/#attribute/failureLockout 4',
+              ],
             )
           end
         end
         context 'max_server_threads' do
-          before { params.merge!(max_server_threads: 1337) }
+          before(:each) { params.merge!(max_server_threads: 1337) }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{max-server-threads\s+=\s+"1337"}
+              %r{max-server-threads\s+=\s+"1337"},
             )
           end
           it do
             is_expected.to contain_augeas(
-              '/opt/rapid7/nexpose/nsc/conf/nsc.xml'
+              '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
             ).with(
               'changes' => [
                 'set WebServer/#attribute/port 3780',
                 'set WebServer/#attribute/minThreads 10',
                 'set WebServer/#attribute/maxThreads 1337',
-                'set WebServer/#attribute/failureLockout 4'
-              ]
+                'set WebServer/#attribute/failureLockout 4',
+              ],
             )
           end
         end
         context 'keepalive' do
-          before { params.merge!(keepalive: true) }
+          before(:each) { params.merge!(keepalive: true) }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{keepalive\s+=\s+"true"}
+              %r{keepalive\s+=\s+"true"},
             )
           end
         end
         context 'socket_timeout' do
-          before { params.merge!(socket_timeout: 1337) }
+          before(:each) { params.merge!(socket_timeout: 1337) }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{socket-timeout\s+=\s+"1337"}
+              %r{socket-timeout\s+=\s+"1337"},
             )
           end
         end
         context 'sc_lookup_cache_size' do
-          before { params.merge!(sc_lookup_cache_size: 1337) }
+          before(:each) { params.merge!(sc_lookup_cache_size: 1337) }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{sc-lookup-cache-size\s+=\s+"1337"}
+              %r{sc-lookup-cache-size\s+=\s+"1337"},
             )
           end
         end
         context 'debug' do
-          before { params.merge!(debug: 1337) }
+          before(:each) { params.merge!(debug: 1337) }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{debug\s+=\s+"1337"}
+              %r{debug\s+=\s+"1337"},
             )
           end
         end
         context 'httpd_error_strings' do
-          before { params.merge!(httpd_error_strings: 'foobar') }
+          before(:each) { params.merge!(httpd_error_strings: 'foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{httpd-error-strings\s+=\s+"foobar"}
+              %r{httpd-error-strings\s+=\s+"foobar"},
             )
           end
         end
         context 'default_start_page' do
-          before { params.merge!(default_start_page: '/foobar') }
+          before(:each) { params.merge!(default_start_page: '/foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{default-start-page\s+=\s+"/foobar"}
+              %r{default-start-page\s+=\s+"/foobar"},
             )
           end
         end
         context 'default_login_page' do
-          before { params.merge!(default_login_page: '/foobar') }
+          before(:each) { params.merge!(default_login_page: '/foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{default-login-page\s+=\s+"/foobar"}
+              %r{default-login-page\s+=\s+"/foobar"},
             )
           end
         end
         context 'default_home_page' do
-          before { params.merge!(default_home_page: '/foobar') }
+          before(:each) { params.merge!(default_home_page: '/foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{default-home-page\s+=\s+"/foobar"}
+              %r{default-home-page\s+=\s+"/foobar"},
             )
           end
         end
         context 'default_setup_page' do
-          before { params.merge!(default_setup_page: '/foobar') }
+          before(:each) { params.merge!(default_setup_page: '/foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{default-setup-page\s+=\s+"/foobar"}
+              %r{default-setup-page\s+=\s+"/foobar"},
             )
           end
         end
         context 'default_error_page' do
-          before { params.merge!(default_error_page: '/foobar') }
+          before(:each) { params.merge!(default_error_page: '/foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{default-error-page\s+=\s+"/foobar"}
+              %r{default-error-page\s+=\s+"/foobar"},
             )
           end
         end
         context 'first_time_config' do
-          before { params.merge!(first_time_config: true) }
+          before(:each) { params.merge!(first_time_config: true) }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{first-time-config\s+=\s+"true"}
+              %r{first-time-config\s+=\s+"true"},
             )
           end
         end
         context 'bad_login_lockout' do
-          before { params.merge!(bad_login_lockout: 9) }
+          before(:each) { params.merge!(bad_login_lockout: 9) }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{bad-login-lockout\s+=\s+"9"}
+              %r{bad-login-lockout\s+=\s+"9"},
             )
           end
           it do
             is_expected.to contain_augeas(
-              '/opt/rapid7/nexpose/nsc/conf/nsc.xml'
+              '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
             ).with(
               'changes' => [
                 'set WebServer/#attribute/port 3780',
                 'set WebServer/#attribute/minThreads 10',
                 'set WebServer/#attribute/maxThreads 100',
-                'set WebServer/#attribute/failureLockout 9'
-              ]
+                'set WebServer/#attribute/failureLockout 9',
+              ],
             )
           end
         end
         context 'admin_app_path' do
-          before { params.merge!(admin_app_path: '/foobar') }
+          before(:each) { params.merge!(admin_app_path: '/foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{admin-app-path\s+=\s+"/foobar"}
+              %r{admin-app-path\s+=\s+"/foobar"},
             )
           end
         end
         context 'auth_param_username' do
-          before { params.merge!(auth_param_username: 'foobar') }
+          before(:each) { params.merge!(auth_param_username: 'foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{auth-param-username\s+=\s+"foobar"}
+              %r{auth-param-username\s+=\s+"foobar"},
             )
           end
         end
         context 'auth_param_password' do
-          before { params.merge!(auth_param_password: 'foobar') }
+          before(:each) { params.merge!(auth_param_password: 'foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{auth-param-password\s+=\s+"foobar"}
+              %r{auth-param-password\s+=\s+"foobar"},
             )
           end
         end
         context 'server_id_string' do
-          before { params.merge!(server_id_string: 'foobar') }
+          before(:each) { params.merge!(server_id_string: 'foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{server-id-string\s+=\s+"foobar"}
+              %r{server-id-string\s+=\s+"foobar"},
             )
           end
         end
         context 'proglet_list' do
-          before { params.merge!(proglet_list: 'foobar') }
+          before(:each) { params.merge!(proglet_list: 'foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{proglet-list\s+=\s+"foobar"}
+              %r{proglet-list\s+=\s+"foobar"},
             )
           end
         end
         context 'taglib_list' do
-          before { params.merge!(taglib_list: 'foobar') }
+          before(:each) { params.merge!(taglib_list: 'foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/httpd.xml'
+              '/opt/rapid7/nexpose/nsc/conf/httpd.xml',
             ).with_content(
-              %r{taglib-list\s+=\s+"foobar"}
+              %r{taglib-list\s+=\s+"foobar"},
             )
           end
         end
         context 'virtualhost' do
-          before { params.merge!(virtualhost: 'foobar.example.com') }
+          before(:each) { params.merge!(virtualhost: 'foobar.example.com') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/api.conf'
+              '/opt/rapid7/nexpose/nsc/conf/api.conf',
             ).with_content(
-              "user=nxadmin\npassword=nxpassword\nserver=foobar.example.com\nport=3780\n"
+              "user=nxadmin\npassword=nxpassword\nserver=foobar.example.com\nport=3780\n",
             )
           end
         end
         context 'api_user' do
-          before { params.merge!(api_user: 'foobar') }
+          before(:each) { params.merge!(api_user: 'foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/api.conf'
+              '/opt/rapid7/nexpose/nsc/conf/api.conf',
             ).with_content(
-              "user=foobar\npassword=nxpassword\nserver=foo.example.com\nport=3780\n"
+              "user=foobar\npassword=nxpassword\nserver=nexpose.example.com\nport=3780\n",
             )
           end
           it do
@@ -497,18 +499,18 @@ describe 'nexpose' do
               'enabled' => true,
               'password' => 'nxpassword',
               'full_name' => 'Puppet API User',
-              'role' => 'global-admin'
+              'role' => 'global-admin',
             )
           end
         end
         context 'api_password' do
-          before { params.merge!(api_password: 'foobar') }
+          before(:each) { params.merge!(api_password: 'foobar') }
           it { is_expected.to compile }
           it do
             is_expected.to contain_file(
-              '/opt/rapid7/nexpose/nsc/conf/api.conf'
+              '/opt/rapid7/nexpose/nsc/conf/api.conf',
             ).with_content(
-              "user=nxadmin\npassword=foobar\nserver=foo.example.com\nport=3780\n"
+              "user=nxadmin\npassword=foobar\nserver=nexpose.example.com\nport=3780\n",
             )
           end
           it do
@@ -517,115 +519,115 @@ describe 'nexpose' do
               'enabled' => true,
               'password' => 'foobar',
               'full_name' => 'Puppet API User',
-              'role' => 'global-admin'
+              'role' => 'global-admin',
             )
           end
         end
       end
       describe 'check bad type' do
         context 'port' do
-          before { params.merge!(port: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(port: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'server_root' do
-          before { params.merge!(server_root: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(server_root: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'doc_root' do
-          before { params.merge!(doc_root: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(doc_root: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'min_server_threads' do
-          before { params.merge!(min_server_threads: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(min_server_threads: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'max_server_threads' do
-          before { params.merge!(max_server_threads: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(max_server_threads: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'keepalive' do
-          before { params.merge!(keepalive: 'foobar') }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(keepalive: 'foobar') }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'socket_timeout' do
-          before { params.merge!(socket_timeout: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(socket_timeout: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'sc_lookup_cache_size' do
-          before { params.merge!(sc_lookup_cache_size: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(sc_lookup_cache_size: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'debug' do
-          before { params.merge!(debug: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(debug: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'httpd_error_strings' do
-          before { params.merge!(httpd_error_strings: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(httpd_error_strings: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'default_start_page' do
-          before { params.merge!(default_start_page: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(default_start_page: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'default_login_page' do
-          before { params.merge!(default_login_page: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(default_login_page: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'default_home_page' do
-          before { params.merge!(default_home_page: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(default_home_page: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'default_setup_page' do
-          before { params.merge!(default_setup_page: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(default_setup_page: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'default_error_page' do
-          before { params.merge!(default_error_page: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(default_error_page: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'first_time_config' do
-          before { params.merge!(first_time_config: 'foobar') }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(first_time_config: 'foobar') }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'bad_login_lockout' do
-          before { params.merge!(bad_login_lockout: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(bad_login_lockout: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'admin_app_path' do
-          before { params.merge!(admin_app_path: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(admin_app_path: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'auth_param_username' do
-          before { params.merge!(auth_param_username: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(auth_param_username: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'auth_param_password' do
-          before { params.merge!(auth_param_password: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(auth_param_password: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'server_id_string' do
-          before { params.merge!(server_id_string: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(server_id_string: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'proglet_list' do
-          before { params.merge!(proglet_list: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(proglet_list: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'taglib_list' do
-          before { params.merge!(taglib_list: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(taglib_list: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'virtualhost' do
-          before { params.merge!(virtualhost: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(virtualhost: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'api_user' do
-          before { params.merge!(api_user: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(api_user: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'api_password' do
-          before { params.merge!(api_password: true) }
-          it { expect { subject.call }.to raise_error(Puppet::Error) }
+          before(:each) { params.merge!(api_password: true) }
+          it { is_expected.to raise_error(Puppet::Error) }
         end
       end
     end
