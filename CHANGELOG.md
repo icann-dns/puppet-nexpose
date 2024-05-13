@@ -1,3 +1,6 @@
+### 2024-05-13 0.3.0
+* Update the API version
+
 ### 2018-09-19 0.2.0
 * update service name
 * convert to PDK
