@@ -45,9 +45,8 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose, parent: Puppet::Provider::Nex
         Puppet.debug("remove #{@resource[:name]}")
         site = ::Nexpose::Site.load(nsc, site_summary.id)
         if site.included_scan_targets[:addresses].include? ::Nexpose::HostName.new(@resource[:name])
-          site.excluded_addresses[:addresses].reject! do |asset|
-            asset == ::Nexpose::HostName.new(@resource[:name])
-          end
+          site.exclude_asset(@resource[:name])
+          site.remove_included_asset(@resource[:name])
           site.save(nsc)
         end
       end
@@ -56,15 +55,13 @@ Puppet::Type.type(:nexpose_host).provide(:nexpose, parent: Puppet::Provider::Nex
       if site_summary
         Puppet.debug("add #{@resource[:name]}")
         site = ::Nexpose::Site.load(nsc, site_summary.id)
-        site.add_host(@resource[:name])
+        site.include_asset(@resource[:name])
         if @operational
           Puppet.debug("enable #{@resource[:name]}")
-          site.excluded_addresses.reject! do |exclude|
-            exclude == ::Nexpose::HostName.new(@resource[:name])
-          end
+          site.remove_excluded_asset(@resource[:name])
         else
           Puppet.debug("disable #{@resource[:name]}")
-          site.excluded_addresses.push(::Nexpose::HostName.new(@resource[:name]))
+          site.exclude_asset(@resource[:name])
         end
         site.save(nsc)
       else

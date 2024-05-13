@@ -1,5 +1,31 @@
-# == Class: nexpose
-#
+# @summary module to configure nexpose
+# @param port The port nunmber
+# @param server_root The server root
+# @param doc_root The doc root
+# @param min_server_threads Min number of threads
+# @param max_server_threads Max number of threads
+# @param keepalive configure keep alive
+# @param socket_timeout Socket timeout
+# @param sc_lookup_cache_size Cache size
+# @param debug Debug level
+# @param httpd_error_strings Http error strings
+# @param default_start_page default start page
+# @param default_login_page default login page
+# @param default_home_page default home page
+# @param default_setup_page default setup page
+# @param default_error_page default error page
+# @param first_time_config set this to first time config
+# @param bad_login_lockout The login lockout count
+# @param admin_app_path The admin end point
+# @param auth_param_username The http form param for the username
+# @param auth_param_password The http form param for the password
+# @param server_id_string The server ID string to use
+# @param proglet_list the prog let lib file
+# @param taglib_list the tag lib file
+# @param virtualhost The domain name of nexpose
+# @param api_user The nexpose api user
+# @param api_password The nexpose api password
+# @param api_email The nexpose api email
 class nexpose (
   Stdlib::Port       $port                 = 3780,
   String             $server_root          = '.',
@@ -29,8 +55,8 @@ class nexpose (
   String             $api_password         = 'nxpassword',
   String             $api_email            = 'nxadmin@example.org',
 ) {
-  package { 'nexpose':
-    ensure   => '7.3.0',
+  package { 'rapid7_vm_console':
+    ensure   => 'installed',
     provider => 'puppet_gem',
   }
   file {

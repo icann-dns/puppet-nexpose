@@ -1,8 +1,10 @@
-require 'nexpose'
+require "base64"
+require "json"
+require 'net/http'
 
 # Nexpose class
 class Puppet::Provider::Nexpose < Puppet::Provider
-  def self.config
+  def config
     @api_file = '/opt/rapid7/nexpose/nsc/conf/api.conf'
     @conf     = {
       'user'     => 'nxadmin',
@@ -21,32 +23,46 @@ class Puppet::Provider::Nexpose < Puppet::Provider
     @conf
   end
 
-  def self.connection
-    @conf = config
-    conn = ::Nexpose::Connection.new(@conf['server'], @conf['user'], @conf['password'], @conf['port'])
-    begin
-      conn.login
-      conn
-    rescue Nexpose::AuthenticationFailed
-      Puppet.warning("Nexpose: unable to login")
+  def request(path, post = false, body = nil, size = 500, view = 'summary')
+    uri = URI("https://#{config['server']}:#{config['port']}/api/3/#{path}")
+    uri.query = URI.encode_www_form({
+      view: view,
+      size: size  # currently we have < 400 but we will need paging at some point
+    })
+    req = if post
+            Net::HTTP::Post.new(uri)
+          else
+            Net::HTTP::Get.new(uri)
+          end
+    req['Accept'] = 'application/json'
+    req['Content-Type'] = 'application/json'
+    req.basic_auth(config['user'], config['password'])
+    req.body = body
+    res = Net::HTTP.start(
+      uri.hostname,
+      uri.port,
+      use_ssl: true,
+      verify_mode: OpenSSL::SSL::VERIFY_NONE
+    ) do |http|
+      http.request(req)
+    end
+    JSON.parse(res)
+  end
+
+  def sites
+    request('sites', view: 'detail')['resources'].map do |resource|
+      {
+        id: resource['id'],
+        name: resource['name'],
+        desciption: resource['desciption'],
+        scan_template: resource['scanTemplate']
+      }
     end
   end
 
-  def self.check_password(user, password)
-    @conf = config
-    nsc = ::Nexpose::Connection.new(@conf['server'], user, password, @conf['port'])
-    begin
-      nsc.login
-    rescue
-      false
-    end
+  def assets
+    request('assets')
   end
 
-  def connection
-    self.class.connection
-  end
 
-  def check_password(user, password)
-    self.class.check_password(user, password)
-  end
 end
