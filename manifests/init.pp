@@ -24,13 +24,14 @@ class nexpose (
   String             $server_id_string     = 'NSC/0.6.4 (JVM)',
   String             $proglet_list         = 'conf/proglet.xml',
   String             $taglib_list          = 'conf/taglibs.xml',
-  Stdlib::Fqdn       $virtualhost          = $::fqdn,
+  Stdlib::Fqdn       $virtualhost          = $facts['networking']['fqdn'],
   String             $api_user             = 'nxadmin',
   String             $api_password         = 'nxpassword',
+  String             $api_email            = 'nxadmin@example.org',
 ) {
   package { 'nexpose':
-    ensure   =>  '0.9.8',
-    provider =>  'puppet_gem',
+    ensure   => '7.3.0',
+    provider => 'puppet_gem',
   }
   file {
     '/opt/rapid7/nexpose/nsc/conf/httpd.xml':
@@ -40,7 +41,7 @@ class nexpose (
       content => "user=${api_user}\npassword=${api_password}\nserver=${virtualhost}\nport=${port}\n",
       mode    => '0400';
   }
-  augeas {'/opt/rapid7/nexpose/nsc/conf/nsc.xml':
+  augeas { '/opt/rapid7/nexpose/nsc/conf/nsc.xml':
     context => '/files/opt/rapid7/nexpose/nsc/conf/nsc.xml/NeXposeSecurityConsole',
     incl    => '/opt/rapid7/nexpose/nsc/conf/nsc.xml',
     lens    => 'Xml.lns',
@@ -57,15 +58,16 @@ class nexpose (
     enable  => true,
     require => File['/opt/rapid7/nexpose/nsc/conf/httpd.xml'],
   }
-  user {'nexpose':
+  user { 'nexpose':
     password => '!';
   }
   # There is a bit of a chicken egg situation with this one.  
   # if we change the api password then the api function will fail
-  nexpose_user {$api_user:
+  nexpose_user { $api_user:
     ensure    => present,
     enabled   => true,
     password  => $api_password,
+    email     => $api_email,
     full_name => 'Puppet API User',
     role      => 'global-admin';
   }

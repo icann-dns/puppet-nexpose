@@ -17,14 +17,15 @@ Puppet::Type.type(:nexpose_site).provide(:nexpose, parent: Puppet::Provider::Nex
 
   def self.instances
     nsc = connection
+    return [] if nsc.nil?
     nsc.login
     nsc.sites.map do |site_summary|
-      site = Site.load(nsc, site_summary.id)
+      site = ::Nexpose::Site.load(nsc, site_summary.id)
       Puppet.debug("Collecting #{site.name}")
       result = { ensure: :present }
       result[:name] = site.name
       result[:description] = site.description
-      result[:scan_template] = site.scan_template
+      result[:scan_template] = site.scan_template_id
       new(result)
     end
   end
@@ -33,6 +34,7 @@ Puppet::Type.type(:nexpose_site).provide(:nexpose, parent: Puppet::Provider::Nex
     @description = @property_flush.key?(:description) ? @property_flush[:description] : @resource[:description]
     @scan_template = @property_flush.key?(:scan_template) ? @property_flush[:scan_template] : @resource[:scan_template]
     nsc = connection
+    return [] if nsc.nil?
     nsc.login
     site_summary = nsc.list_sites.find { |site| site.name == @resource[:name] }
     if @property_flush[:ensure] == :absent
@@ -43,11 +45,11 @@ Puppet::Type.type(:nexpose_site).provide(:nexpose, parent: Puppet::Provider::Nex
     else
       if site_summary
         Puppet.debug("update #{@resource[:name]}")
-        site = Site.load(nsc, site_summary.id)
+        site = ::Nexpose::Site.load(nsc, site_summary.id)
         site.scan_template = @scan_template
       else
         Puppet.debug("add #{@resource[:name]}")
-        site = Site.new(@resource[:name], @scan_template)
+        site = ::Nexpose::Site.new(@resource[:name], @scan_template)
       end
       site.description = @description
       site.save(nsc)

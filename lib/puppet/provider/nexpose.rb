@@ -1,5 +1,4 @@
 require 'nexpose'
-include Nexpose
 
 # Nexpose class
 class Puppet::Provider::Nexpose < Puppet::Provider
@@ -24,12 +23,18 @@ class Puppet::Provider::Nexpose < Puppet::Provider
 
   def self.connection
     @conf = config
-    Connection.new(@conf['server'], @conf['user'], @conf['password'], @conf['port'])
+    conn = ::Nexpose::Connection.new(@conf['server'], @conf['user'], @conf['password'], @conf['port'])
+    begin
+      conn.login
+      conn
+    rescue Nexpose::AuthenticationFailed
+      Puppet.warning("Nexpose: unable to login")
+    end
   end
 
   def self.check_password(user, password)
     @conf = config
-    nsc = Connection.new(@conf['server'], user, password, @conf['port'])
+    nsc = ::Nexpose::Connection.new(@conf['server'], user, password, @conf['port'])
     begin
       nsc.login
     rescue

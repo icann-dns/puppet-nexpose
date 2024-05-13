@@ -19,9 +19,10 @@ Puppet::Type.type(:nexpose_user).provide(:nexpose, parent: Puppet::Provider::Nex
   def self.instances
     # This sets @property_hash
     nsc = connection
+    return [] if nsc.nil?
     nsc.login
     nsc.users.map do |user_summary|
-      user = User.load(nsc, user_summary.id)
+      user = ::Nexpose::User.load(nsc, user_summary.id)
       Puppet.debug("Collecting #{user.name}")
       result = { ensure: :present }
       result[:name] = user.name
@@ -58,6 +59,7 @@ Puppet::Type.type(:nexpose_user).provide(:nexpose, parent: Puppet::Provider::Nex
     end
 
     nsc = connection
+    return [] if nsc.nil?
     nsc.login
     user_summary = nsc.users.find { |user| user.name == @resource[:name] }
     if @property_flush[:ensure] == :absent
@@ -68,7 +70,7 @@ Puppet::Type.type(:nexpose_user).provide(:nexpose, parent: Puppet::Provider::Nex
     else
       if user_summary
         Puppet.debug("update #{@resource[:name]}")
-        user = User.load(nsc, user_summary.id)
+        user = ::Nexpose::User.load(nsc, user_summary.id)
         user.full_name  = @full_name
         user.email      = @email
         user.role_name  = @role
@@ -76,7 +78,7 @@ Puppet::Type.type(:nexpose_user).provide(:nexpose, parent: Puppet::Provider::Nex
         user.password = @password
       else
         Puppet.debug("add #{@resource[:name]}, #{@full_name}, #{@password}, #{@role}")
-        user = User.new(@resource[:name], @full_name, @password, @role.to_s)
+        user = ::Nexpose::User.new(@resource[:name], @full_name, @password, @role.to_s)
         user.email = @email
         user.enabled = (@enabled.to_s == 'true') ? 1 : 0
       end
