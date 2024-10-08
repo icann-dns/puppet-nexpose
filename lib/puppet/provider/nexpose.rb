@@ -27,8 +27,9 @@ class Puppet::Provider::Nexpose < Puppet::Provider
     begin
       conn.login
       conn
-    rescue Nexpose::AuthenticationFailed
+    rescue ::Nexpose::AuthenticationFailed
       Puppet.warning("Nexpose: unable to login")
+      nil
     end
   end
 
