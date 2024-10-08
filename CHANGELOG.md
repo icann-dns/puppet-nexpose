@@ -1,3 +1,6 @@
+### 2024-10-08 0.3.1
+* Small fix to nexpose.rb to fix scoping
+
 ### 2024-05-13 0.3.0
 * Update the API version
 
